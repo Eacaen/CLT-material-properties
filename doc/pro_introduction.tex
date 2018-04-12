@@ -1,0 +1,111 @@
+\documentclass{article}
+\usepackage[UTF8]{ctex}
+\usepackage{hyperref}
+\usepackage{mathtools,amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{listings} 
+\usepackage{tocloft}
+\hypersetup{colorlinks=true,linkcolor=black}
+\begin{document}
+\title{ Laminate\_Analysis  Introduction \& Handbook }
+\author{Eacaen \\ tianyunhu@gmail.com }
+\maketitle
+\includegraphics[width = .9\textwidth]{space.jpg}
+\newpage
+\tableofcontents                        
+\newpage
+\section{Composite Material Calculation with CLT}
+	\subsection{class Fibre}
+		The class designed to define and change the fibre material's properties. 
+		\subsubsection{eg.}
+		\begin{lstlisting}[language={Python}] 
+	f = Fibre(Ef1=74000,Ef2=74000,Gf12=30800,\
+		vf21=0.2,density=2.55)
+		\end{lstlisting}
+
+	\subsection{class Matrix}
+		The class designed to define and change the matrix material's properties. 
+
+		\subsubsection{eg.}	
+		\begin{lstlisting}[language={Python}] 
+	m = Matrix(Em=300,Gm=1222,vm=0.35,density=1.18)
+		\end{lstlisting}
+
+	\subsection{class Lamina}
+		The class is used to define the signal lamina, its properties and engineering constants.
+
+		In the lamina initialization, you need to give the Elastic moduli $E_1,E_2$, the shear moduli $G_{12}$, the major Poisson's ration $v_{21}$ or $v_{12}$. And if you want to do the strength failure analysis, you need to give the tensile strength and compressive strength parallel to the fibre $X_t,X_c$, the tensile strength and compressive strength of the unidirectional layer transverse to the fibre $Y_t,Y_c$, and the shear strength $S_{21}$. Don't forget to define the angle and thickness of the lamina.(All the constants' default value are zero 0 )
+
+		And the second way to define from the fibre and matrix materials have been defined above, read the example to get more.
+
+		\subsubsection{eg. define lamina directly}	
+		\begin{lstlisting}[language={Python}] 
+	a=Lamina(E1=5.4e4,E2=0.001,G12=0.001,v21=0.25,
+	Xt=1.05e3,Xc=1.05e3,Yt=28,Yc=140,S=42,
+	angle=0,thickness=1)
+		\end{lstlisting} 
+
+		\subsubsection{eg. define lamina by fibre and matrix }
+		\begin{lstlisting}[language={Python}] 
+	a = Lamina(fibre=f , angle = 0 ,thickness=1 )
+	b = Lamina(matrix=m, angle = 90,thickness=10.0)
+		\end{lstlisting} 
+
+		After define the lamina,you can get the matrix of the lamina,like matrix\_Q or matrix\_Qbar, you can get more if you look for the source code.
+		
+
+	\subsection{class Laminate}
+		The class is used to define the Laminate.
+
+		After the laminate initialization, you need to add the lamina as the lay up order of the laminate order.Then update the laminate you define,you can get the matrix\_ABD, the thickness and so on.
+
+		\subsubsection{eg.}	
+		\begin{lstlisting}[language={Python}] 
+	LA = Laminate()  #laminate initialization
+	LA.add_Lamina(a) #add lamina
+	LA.add_Lamina(a)
+	LA.update()      #update and start calculation
+	LA.repalce_Lamina(0,b)
+	#replace the first(start form 0) lamina_a with the lamina_b
+	LA.remove_Lamina(0) #remove the first lamina
+	LA.update() #need to update again when change the lamina
+		\end{lstlisting} 
+
+	\subsection{class Loading}
+		The class is used to define the Loading apply to the laminate.
+
+		After the laminate update, you can apply the load defined to the laminate, and get the stress and strain $\sigma_1$, $\sigma_2$,$\tau_{12}$ in the lamina COS, the stress and strain $\sigma_x$, $\sigma_y$,$\tau_{xy}$ in the laminate COS.
+
+		\subsubsection{eg.}	
+		\begin{lstlisting}[language={Python}] 
+	Load = Loading(1,0,0,0,0,0) #load define
+	Load.apple_to(LA) # load apply to laminate
+	Load.change_Load(2,0,0,0,0,0) #change load
+	Load.apple_to(LA) # load apply to laminate again
+		\end{lstlisting}
+
+	\subsection{class Failure\_Criterion}
+		The class is used text the strength of the laminate use Failure\_Criterion.You can choose which lamina to test or whole laminate. 
+
+		\subsubsection{eg.}	
+		\begin{lstlisting}[language={Python}] 
+	c=Failture_Criterion()  #Criterion initialization
+	c.Tsai_Hill(Load,layer_num=1) 
+	#choose the strength criterion and which lamina or all
+	r= c.ret_list #get the answers
+		\end{lstlisting}
+		 	
+	\subsection{laminate\_Tools Introduction}
+		This part can print, save and plot the results in excel file format, you should give a name of the results you want to save.(the default do not save,and the name without `.' in). When calling the function, you can also choose which lamina's results to show or show all the laminate. 
+
+		\subsubsection{eg.}	
+		\begin{lstlisting}[language={Python}] 
+	print Report_strain(Load,mode='12')
+	plot_strain(Load,mode='xy',max_ten=None,mode2='1')
+		\end{lstlisting}		
+
+
+
+
+
+\end{document}
