@@ -1,7 +1,8 @@
 # define lamina by fibre and matrix 
 
 from laminate_analysis_1 import *
-
+from Lamina import Lamina
+from Laminate import Laminate
 if __name__ == "__main__":
 	f = Fibre(5.4e4,1.8e4,8.8e3,vf21 = 0.25,density = 10 , Xt = 1.05e3,Xc = 1.05e3,\
 				Yt = 2.8e1,Yc = 14e1, S = 1.4e1)
@@ -14,6 +15,7 @@ if __name__ == "__main__":
 	print( a.matrix_Q)
 	b = Lamina(matrix=m, angle = 90,thickness=10.0)
 
+	
 	LA = Laminate()
 	LA.add_Lamina(a)
 	LA.add_Lamina(b)
