@@ -20,6 +20,7 @@ class Failure_Criterion(object):
 	
 	def Tsai_Hill(self,loading,layer_num = None ):
 		self.ret_list = []
+		
 		self.__ret_centroid = 0
 		 
 #************************************************************************
@@ -63,6 +64,64 @@ class Failure_Criterion(object):
 				self.__ret_centroid = (sigma_1 / Xt) **2 - (sigma_1 * sigma_2) / (Xt**2) + \
 									(sigma_2 / Yt) **2 + (tau_12 / S) **2
 				self.ret_list.append(self.__ret_centroid)
+
+
+	def Tsai_Wu(self,loading,layer_num = None ):
+		self.ret_list = []
+		self.__ret_centroid = 0
+		
+#************************************************************************
+#    Failure_Criterion in the centroid layer
+#************************************************************************
+		stress_Criterion = loading.laminate_stresses_12
+
+		if layer_num == None:
+			a,b,c = np.shape(stress_Criterion)
+			for i in range(1,a,3):
+				temp_ret =[]
+				layer_num = int((i-1)/3)
+				Xt = loading.laminate_loaded.lamina_list[layer_num].Xt
+				Xc = loading.laminate_loaded.lamina_list[layer_num].Xc
+				Yt = loading.laminate_loaded.lamina_list[layer_num].Yt
+				Yc = loading.laminate_loaded.lamina_list[layer_num].Yc
+				S  = loading.laminate_loaded.lamina_list[layer_num].S
+
+				f1 = 1.0/Xt - 1.0/Xc
+				f2 = 1.0/Yt - 1.0/Yc
+
+				f11 = 1.0/(Xt*Xc)
+				f22 = 1.0/(Yt*Yc)
+				f12 = -1.0/(2*(Xt*Xc*Yt*Yc)**(1/2.0))
+				f66 = 1.0/(S**2)
+
+				for i in [0,2]:
+					stress_ply = stress_Criterion[layer_num*3+i]
+				
+					sigma_1 = float(stress_ply[0])
+					sigma_2 = float(stress_ply[1])
+					tau_12  =  float(stress_ply[2])
+
+					b = f1*sigma_1 + f2*sigma_2
+					a = f11*sigma_1**2 + f22*sigma_2**2 + f66*tau_12**2 + 2*f12*sigma_1*sigma_2
+					
+					sf = (-b + (b**2 + 4*a)**(1.0/2))/(2*a)
+
+					self.__ret_centroid = sf
+					temp_ret.append(self.__ret_centroid)
+				
+				    # Failure mode calculations  
+					H1 = abs(f1*sigma_1 + f11*sigma_1**2)
+					H2 = abs(f2*sigma_2 + f22*sigma_2**2)
+					H6 = abs(f66*tau_12**2)
+				 
+					if max(H1,H2,H6) == H1:
+						mode = "fiber"        # fiber failure
+					elif max(H1,H2,H6) == H2:
+						mode = "matrix"        # matrix failure
+					else:
+						mode = "shear"        # shear failure
+					loading.laminate_loaded.lamina_list[layer_num].fail_status['Mode'] = mode
+				self.ret_list.append( temp_ret )
 
 
 	def Hoffman(self,loading,layer_num = None ):

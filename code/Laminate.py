@@ -63,12 +63,15 @@ class Laminate(object):
 		self.D = np.matrix([[0.0,0.0,0.0],[0.0,0.0,0.0],[0.0,0.0,0.0]])
 
 		for lamina in self.lamina_list[:]:
- 			self.Qk.append(lamina.matrix_Q_bar)
- 			self.T_Stress.append(lamina.matrix_Tstress)
- 			self.T_Strain.append(lamina.matrix_Tstrain)
- 			self.THICK = self.THICK + lamina.thickness * 1.0
- 			self.Zk.append(self.THICK)# self.Zk.reverse()
- 			self.density = self.density + lamina.density * lamina.thickness * 1.0 
+
+			lamina.properities_degradation()
+			self.Qk.append(lamina.matrix_Q_bar)
+			self.T_Stress.append(lamina.matrix_Tstress)
+			self.T_Strain.append(lamina.matrix_Tstrain)
+			self.THICK = self.THICK + lamina.thickness * 1.0
+			self.Zk.append(self.THICK)# self.Zk.reverse()
+			self.density = self.density + lamina.density * lamina.thickness * 1.0 
+
 		self.density = self.density/self.THICK	
 #************************************************************************
 #	Get A, B, D Matrix

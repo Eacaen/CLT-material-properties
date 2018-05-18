@@ -372,15 +372,6 @@ def plot_strain(Load,layer_num = None,max_ten = None,max_com = None,\
 		                              hatch="//", facecolor="none", 
 		                              edgecolor="r", lw=1.0)
 		                              		
-		# for i in range(0  ,  int( len(yy) / 2 )):
-  # 			straigh_x = np.linspace(abs(sp[2*i])/10.0 , sp[2*i])
-  # 			straigh_y = [n*yy[2*i] for n in np.ones(len(straigh_x))]
-  # 			ax1.plot(straigh_x,straigh_y,'--')
-			
-
-		# straigh_x = np.linspace(abs(sp[len(yy)-1])/10.0 , sp[len(yy)-1])
-		# straigh_y = [n*yy[len(yy)-1] for n in np.ones(len(straigh_x))]
-		# ax1.plot(straigh_x,straigh_y,'--')
 
 		ax1.set_ylabel('Z(k)')
 		# ax1.set_ylim(y_list[0],y_list[-1])
@@ -465,36 +456,40 @@ def Report_puck(Load,Laminate,layer_num = None ,save = ''):
 	return frame
 
 if __name__ == "__main__":
-	a = Lamina(5.4e4,1.8e4,8.8e3,v21 = 0.25,Xt = 1.05e3,Xc = 1.04e3,\
-							Yt = 28,Yc = 140, S = 42,\
-							angle = 0,thickness=5)
+	# a = Lamina(5.4e4,1.8e4,8.8e3,v21 = 0.25,Xt = 1.05e3,Xc = 1.04e3,\
+	# 						Yt = 28,Yc = 140, S = 42,\
+	# 						angle = 0,thickness=5)
 
-	b = Lamina(5.4e4,1.8e4,8.8e3,v21 = 0.25,Xt = 1.05e3,Xc = 1.04e3,\
-							Yt = 28,Yc = 140, S = 42,\
-							angle = 90,thickness=10)
+	# b = Lamina(5.4e4,1.8e4,8.8e3,v21 = 0.25,Xt = 1.05e3,Xc = 1.04e3,\
+	# 						Yt = 28,Yc = 140, S = 42,\
+	# 						angle = 90,thickness=10)
+
+	a = Lamina(5.4e10,1.8e7 , 8.8e9,v21 = 0.25,Xt = 1.05e6,Xc = -1.05e6,\
+				Yt = 2.8e6,Yc = -14e6, S = 1.4e6,\
+				angle = 0,thickness=0.125e-3)
+
+	b = Lamina(5.4e10,1.8e7 , 8.8e9,v21 = 0.25,Xt = 1.05e6,Xc = -1.05e6,\
+				Yt = 2.8e6,Yc = -14e6, S = 1.4e6,\
+				angle = 90,thickness=0.125e-3)
 
 	LA = Laminate()
 
-	LA.add_Lamina(b)
 	LA.add_Lamina(a)
 	LA.add_Lamina(b)
-	LA.add_Lamina(b)
 	LA.add_Lamina(a)
-	LA.add_Lamina(b)
-	LA.add_Lamina(b)
-	LA.add_Lamina(b)
 
 	LA.update()
 
-	Load = Loading(0,0,0,100,0,0)
+	Load = Loading(0,0,0,0,90,0)
 	Load.apple_to(LA)
 
 	print( Report_stress(Load,mode = '12'))
 	print (Report_strain(Load,mode = '12'))
-	# criterian = Failture_Criterion()
-	# criterian.Tsai_Hill(Load,layer_num = 1)
-	# ret =  criterian.ret_list
-	# print ret
+
+	criterian = Failure_Criterion()
+	criterian.Tsai_Hill(Load)
+	ret =  criterian.ret_list
+	print( ret)
 
 	# criterian.Tsai_Hill(Load )
 	# ret =  criterian.ret_list
