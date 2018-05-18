@@ -21,9 +21,10 @@ class Lamina(object):
 		self.v21 = v21
 		self.density  = density
 
-		self.fail_status =  {"Failed?" : [False] * 3, 
-                 			   "Mode" : [""] * 3,
-                  			  "Load Factor" : [0] * 3}
+		self.fail_status =  {"Failed" : False, 
+                 			    "Mode" : "" ,
+                  			    "Load" : [0]*6 }
+
 		if (self.v21 == 0) and (v12 != 0):
 			print( 'v21 unknown')
 			self.v12 = v12
@@ -55,40 +56,30 @@ class Lamina(object):
 
 
 		if self.E1 !=0 and self.E2 != 0 and self.G12 !=0 :#or self.fibre!=None or self.matrix!=None: 
+			self.update_lamina_matrix()
 			
-			self.matrix_S = self.get_S()
-			self.matrix_Q = self.get_Q()
-			self.matrix_Tstress = self.get_Tstress(self.angle)
-			self.matrix_Tstrain = self.get_Tstrain(self.angle)
 
-			if self.angle == 0:
-				self.matrix_Q_bar = self.matrix_Q
+		def properities_degradation(self , pd = 0.0001):
+			# pd : properities_degradation_parameter for failed layers
+			if self.fail_status['Failed']:
+				fail_type = self.fail_status['Mode']
 
-			if self.angle != 0:
-				Tinv = self.matrix_Tstress.I
-				self.matrix_Q_bar = ( Tinv * self.matrix_Q ) * (Tinv.T)
-			print( 'lamina define directly , prepare well\n\n')
-			
-		# if name == 'Material_':
-		# 	self.name = name + str(len(Lamina.name_list))
-		# else :
-		# 	self.name = name
-		# if self.name:
-		# 	Lamina.name_list.append(self.name)
-		# 	Lamina.name_counter = Lamina.name_counter + 1
+				if fail_type == "fiber" or fail_type == "shear":
+					self.E1  = self.E1 * pd
+					self.E2  = self.E2 * pd
+					self.v12 = self.v12 * pd
+					self.G12 = self.G12 * pd
+					self.v21 = v12 * self.E1 / self.E2
 
-		# def __del__(self):  #if define __del__ , the instance can't delete auto by the system
-		# 	n = Lamina.name_list.index(self.name)
-		# 	Lamina.name_list.pop(n)
-		# 	Lamina.name_counter = Lamina.name_counter - 1
-			# print 'Lamina.name_counter',Lamina.name_counter
+				elif fail_type == "matrix":
+					self.E1  = self.E1
+					self.E2  = self.E2 * pd
+					self.v12 = self.v12 * pd
+					self.G12 = mat_prop["G12"]*pd
+					self.v21 = self.v12 * self.E2 / self.E1
 
+				self.update_lamina_matrix()
 
-		def Passion_v(self):
-			pass
-
-		def Get_Matrix(self):
-			pass	
 #************************************************************************
 #	get lamina form the fibre and matrix
 #	\Phi = fibre_volume  \Psi = fibre_mass
@@ -185,17 +176,7 @@ class Lamina(object):
 		self.max_stain_t = max_stain_t
 		self.max_stain_c = max_stain_c
 
-		self.matrix_S = self.get_S()
-		self.matrix_Q = self.get_Q()
-		self.matrix_Tstress = self.get_Tstress(self.angle)
-		self.matrix_Tstrain = self.get_Tstrain(self.angle)
-
-		if self.angle == 0:
-			self.matrix_Q_bar = self.matrix_Q
-
-		if self.angle != 0:
-			Tinv = self.matrix_Tstress.I
-			self.matrix_Q_bar = ( Tinv * self.matrix_Q ) * (Tinv.T)
+		self.update_lamina_matrix()
 
 	def Chamis_Model(self , fibre_a , matrix_b):
 		Kf = fibre_a**2 *1.0 / matrix_b**2
@@ -207,6 +188,19 @@ class Lamina(object):
 		self.G12 = self.matrix.Gm / (1-math.sqrt(Kf) *(1 - self.matrix.Gm/self.fibre.Gf12))
 		self.v12 = (1 - math.sqrt(Kf) ) * self.matrix.vm + math.sqrt(Kf) * self.fibre.vf12  
 
+	def update_lamina_matrix(self):
+		self.matrix_S = self.get_S()
+		self.matrix_Q = self.get_Q()
+		self.matrix_Tstress = self.get_Tstress(self.angle)
+		self.matrix_Tstrain = self.get_Tstrain(self.angle)
+
+		if self.angle == 0:
+			self.matrix_Q_bar = self.matrix_Q
+
+		if self.angle != 0:
+			Tinv = self.matrix_Tstress.I
+			self.matrix_Q_bar = ( Tinv * self.matrix_Q ) * (Tinv.T)
+		print( 'lamina define directly , prepare well\n\n')
 
 
 	def get_S(self):
