@@ -21,6 +21,9 @@ class Lamina(object):
 		self.v21 = v21
 		self.density  = density
 
+		self.fail_status =  {"Failed?" : [False] * 3, 
+                 			   "Mode" : [""] * 3,
+                  			  "Load Factor" : [0] * 3}
 		if (self.v21 == 0) and (v12 != 0):
 			print( 'v21 unknown')
 			self.v12 = v12

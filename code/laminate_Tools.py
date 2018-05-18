@@ -28,6 +28,9 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib
 from collections import OrderedDict
+import numpy as np
+import scipy as sp
+import math
 def where_dot(ddoo):
 	i = 0
 	if isinstance(ddoo,int):
@@ -48,14 +51,14 @@ def Report_stress(Load,layer_num = None,mode = '12',save = ''):
 	elif  mode == 'xy':
 		stress_report = Load.laminate_stresses_xy
 	else:
-		print 'mode_error'
+		print( 'mode_error')
 		return 
 
 	if layer_num == None:
 		
 		a,b,c = np.shape(stress_report)
 		# print a,b,c
-		for j in range(0,a/3):
+		for j in range(0,int(a/3)):
 			for i in range(0,3):
 				if i == 0:
 					s = 'Layer_' + str(j) + '_top'
@@ -113,13 +116,13 @@ def Report_strain(Load,layer_num = None,mode = '12',save = ''):
 	elif  mode == 'xy':
 		strain_report = Load.laminate_strains_xy
 	else:
-		print 'mode_error'
+		print ('mode_error')
 		return 
 
 	if layer_num == None:
 		
 		a,b,c = np.shape(strain_report)
-		for j in range(0,a/3): #a/3 = number of lamina
+		for j in range(0,int(a/3)): #a/3 = number of lamina
 			for i in range(0,3):
 				if i%3 == 0:
 					s = 'Layer_' + str(j) + '_top'
@@ -181,10 +184,10 @@ def plot_stress(Load,layer_num = None,max_ten = None,max_com = None,\
 	elif  mode == 'xy':
 		stress_plot = Load.laminate_stresses_xy
 	else:
-		print 'mode_error'
+		print( 'mode_error')
 		return 
 
-   	fig = plt.figure()
+	fig = plt.figure()
 	ax1 = fig.add_subplot(111)
 #-----------------------------------------------------------
 	if mode2 == '1':
@@ -210,7 +213,7 @@ def plot_stress(Load,layer_num = None,max_ten = None,max_com = None,\
 		ax1.set_xlabel(r'$\sigma_{12}$',size = 18)	
 #-----------------------------------------------------------
 	else:
-		print 'should choose a right stress to plot'
+		print ('should choose a right stress to plot')
 		return
 
 	if layer_num == None:
@@ -225,10 +228,11 @@ def plot_stress(Load,layer_num = None,max_ten = None,max_com = None,\
 #************************************************************************
 		a,b,c = np.shape(stress_plot)
 		sp = []
-		for j in range(0,a/3): #a/3 = number of lamina
+		for j in range(0,int(a/3)): #a/3 = number of lamina
 			sp.append(float(stress_plot[j*3][show_num]))  # choose which to plot
 			sp.append(float(stress_plot[j*3+2][show_num]))
 			#push the lamina's top and bottom in the list as their order in laminate
+
 #************************************************************************
 #	data solution , expand the middle part of data
 #   eg. [-10 -3 3 10] to [-10 -3 -3 3 3 10]
@@ -242,22 +246,31 @@ def plot_stress(Load,layer_num = None,max_ten = None,max_com = None,\
 #************************************************************************
 #	add the straight line to divide the lamina
 #************************************************************************
-  		for i in range(0,len(yy)/2 ):
-  			straigh_x = np.linspace(abs(sp[2*i])/10.0 , sp[2*i])
-  			straigh_y = [n*yy[2*i] for n in np.ones(len(straigh_x))]
-			ax1.plot(straigh_x,straigh_y,'--')
+		# for i in range(0, int(len(yy)/2) ):
+		# 	straigh_x = np.linspace(abs(sp[2*i])/10.0 , sp[2*i])
+		# 	straigh_y = [n*yy[2*i] for n in np.ones(len(straigh_x))]
+		# 	ax1.plot(straigh_x,straigh_y,color="r", lw=2.5)   
 
-		straigh_x = np.linspace(abs(sp[len(yy)-1])/10.0 , sp[len(yy)-1])
-  		straigh_y = [n*yy[len(yy)-1] for n in np.ones(len(straigh_x))]
-		ax1.plot(straigh_x,straigh_y,'--')
+		# straigh_x = np.linspace(abs(sp[len(yy)-1])/10.0 , sp[len(yy)-1])
+		# straigh_y = [n*yy[len(yy)-1] for n in np.ones(len(straigh_x))]
+		# ax1.plot(straigh_x,straigh_y ,color="r", lw=2.5)   
+
+		# for i in range(0, int(len(yy)/2) ):
+			
+		for j in range(0 , int(len(yy)-1) ):
+			plt.fill_betweenx( [ yy[j] ,  yy[j+1] ],
+		                              [ sp[j]  , sp[j+1]   ],
+		                              hatch="//", facecolor="none", 
+		                              edgecolor="r", lw=1.0)
 
 
 #************************************************************************
 #	set y axis range
 #************************************************************************
 		ax1.set_ylabel('Z(k)')
-		ax1.set_ylim(y_list[0],y_list[-1])
-		plt.plot(sp,yy,'black')
+		# ax1.set_ylim(y_list[0],y_list[-1])
+		plt.plot(sp,yy,'b')
+		ax1.plot([0]*len(yy) , yy , color="b", lw=2.5)
 		# print sp,yy
 
 		# for i in range(len(sp)-1):
@@ -304,7 +317,7 @@ def plot_strain(Load,layer_num = None,max_ten = None,max_com = None,\
 	elif  mode == 'xy':
 		strain_plot = Load.laminate_strains_xy
 	else:
-		print 'mode_error'
+		print( 'mode_error')
 		return
 	fig = plt.figure()
 	ax1 = fig.add_subplot(111)
@@ -325,7 +338,7 @@ def plot_strain(Load,layer_num = None,max_ten = None,max_com = None,\
 		show_num = 2
 		x_str1 = r'$\epsilon_{12}$' 	
 	else:
-		print 'should choose a right strain to plot'
+		print ('should choose a right strain to plot')
 		return
    
       
@@ -335,7 +348,7 @@ def plot_strain(Load,layer_num = None,max_ten = None,max_com = None,\
 		y_list = [x - thk for x in y]
 		a,b,c = np.shape(strain_plot)
 		sp = []
-		for j in range(0,a/3): #a/3 = number of lamina
+		for j in range(0,int(a/3)): #a/3 = number of lamina
 			sp.append(float(strain_plot[j*3][show_num]))  # choose which to plot
 			sp.append(float(strain_plot[j*3+2][show_num]))
 			#push the lamina's top and bottom in the list as their order in laminate
@@ -352,21 +365,27 @@ def plot_strain(Load,layer_num = None,max_ten = None,max_com = None,\
 			yy.append(y_list[i])
 			yy.append(y_list[i])
 		yy.append(y_list[-1])
-  		
-  		for i in range(0,len(yy)/2 ):
-  			straigh_x = np.linspace(abs(sp[2*i])/10.0 , sp[2*i])
-  			straigh_y = [n*yy[2*i] for n in np.ones(len(straigh_x))]
-			ax1.plot(straigh_x,straigh_y,'--')
+  
+		for j in range(0 , int(len(yy)-1) ):
+			plt.fill_betweenx( [ yy[j] ,  yy[j+1] ],
+		                              [ sp[j]  , sp[j+1]   ],
+		                              hatch="//", facecolor="none", 
+		                              edgecolor="r", lw=1.0)
+		                              		
+		# for i in range(0  ,  int( len(yy) / 2 )):
+  # 			straigh_x = np.linspace(abs(sp[2*i])/10.0 , sp[2*i])
+  # 			straigh_y = [n*yy[2*i] for n in np.ones(len(straigh_x))]
+  # 			ax1.plot(straigh_x,straigh_y,'--')
 			
 
-		straigh_x = np.linspace(abs(sp[len(yy)-1])/10.0 , sp[len(yy)-1])
-  		straigh_y = [n*yy[len(yy)-1] for n in np.ones(len(straigh_x))]
-		ax1.plot(straigh_x,straigh_y,'--')
-		# print sp,yy
+		# straigh_x = np.linspace(abs(sp[len(yy)-1])/10.0 , sp[len(yy)-1])
+		# straigh_y = [n*yy[len(yy)-1] for n in np.ones(len(straigh_x))]
+		# ax1.plot(straigh_x,straigh_y,'--')
 
 		ax1.set_ylabel('Z(k)')
-		ax1.set_ylim(y_list[0],y_list[-1])
+		# ax1.set_ylim(y_list[0],y_list[-1])
 		ax1.set_xlabel(x_str1 + r'$\   *1e$' + str(dots),size = 18)
+		ax1.plot([0]*len(yy) , yy , color="b", lw=2.5)
 
 		plt.plot(sp,yy,'black')
 
@@ -434,7 +453,7 @@ def Report_puck(Load,Laminate,layer_num = None ,save = ''):
 		layer.append(s)
 		Model[layer[i]] = [max_F,s1]
 
- 	frame = pd.DataFrame(Model)
+	frame = pd.DataFrame(Model)
 	frame.index = ['Puck-Value','Failure-Type']
 
 	frame = frame.T
@@ -447,25 +466,31 @@ def Report_puck(Load,Laminate,layer_num = None ,save = ''):
 
 if __name__ == "__main__":
 	a = Lamina(5.4e4,1.8e4,8.8e3,v21 = 0.25,Xt = 1.05e3,Xc = 1.04e3,\
-											Yt = 28,Yc = 140, S = 42,\
-											angle = 0,thickness=5)
+							Yt = 28,Yc = 140, S = 42,\
+							angle = 0,thickness=5)
 
 	b = Lamina(5.4e4,1.8e4,8.8e3,v21 = 0.25,Xt = 1.05e3,Xc = 1.04e3,\
-											Yt = 28,Yc = 140, S = 42,\
-											angle = 90,thickness=10)
+							Yt = 28,Yc = 140, S = 42,\
+							angle = 90,thickness=10)
 
 	LA = Laminate()
+
+	LA.add_Lamina(b)
+	LA.add_Lamina(a)
 	LA.add_Lamina(b)
 	LA.add_Lamina(b)
 	LA.add_Lamina(a)
-	
+	LA.add_Lamina(b)
+	LA.add_Lamina(b)
+	LA.add_Lamina(b)
+
 	LA.update()
 
-	Load = Loading(0,0,0,0,1000,0)
+	Load = Loading(0,0,0,100,0,0)
 	Load.apple_to(LA)
 
-	print Report_stress(Load,mode = '12')
-	print Report_strain(Load,mode = '12')
+	print( Report_stress(Load,mode = '12'))
+	print (Report_strain(Load,mode = '12'))
 	# criterian = Failture_Criterion()
 	# criterian.Tsai_Hill(Load,layer_num = 1)
 	# ret =  criterian.ret_list
@@ -479,6 +504,6 @@ if __name__ == "__main__":
 	# ret =  criterian.ret_list
 	# print '----Hoffman-->',ret
 	# print Report_stress(Load,layer_num = 11,mode = '12')
-	plot_stress(Load,max_ten = 1.0,mode = 'xy',mode2 = '1')
+	plot_stress(Load,max_ten = 0,mode = 'xy',mode2 = '1')
 	# print Report_strain(Load,mode = '12')
-	# plot_strain(Load,mode = 'xy',max_ten = None,mode2 = '1')
+	plot_strain(Load,mode = 'xy',max_ten = None,mode2 = '1')
