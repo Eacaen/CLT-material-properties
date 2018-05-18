@@ -3,7 +3,7 @@ from __future__ import print_function
 import numpy as np
 import scipy as sp
 import math
-
+import copy
 
 class Laminate(object):
 	"""docstring for Laminite_"""
@@ -209,7 +209,8 @@ class Laminate(object):
 		self.updated = 1      
 
 	def add_Lamina(self,lamina):
-		self.lamina_list.append(lamina)
+		# self.lamina_list.append(lamina)
+		self.lamina_list.append(copy.deepcopy(lamina))
 		self.updated = 0
 
 	def repalce_Lamina(self,number,lamina):

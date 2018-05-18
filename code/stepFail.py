@@ -103,7 +103,14 @@ if __name__ == "__main__":
 		if failed_count[1] == failed_count[0]:	   
 			LF = LF*LS		#increases Load Factor by 5%
 			# print([int(load) for load in LF*F if load>0])
-			# print(LF)
+			print(LF)
 
 		failed_count[0] = failed_count[1]
 
+	fpf = min(fail_status["Load Factor"])
+	lpf = max(fail_status["Load Factor"])
+
+    # Prints results
+	print("First Ply Failure at LF: " + str(round(fpf)))
+	print("Last Ply Failure at LF: " + str(round(lpf)))
+	print("LPF / FPF : " + str(round(lpf/fpf, 1)))
