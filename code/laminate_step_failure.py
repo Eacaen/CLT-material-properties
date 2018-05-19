@@ -1,5 +1,11 @@
-from laminate_analysis_1 import *
+# coding:utf-8
+from Fibre_Matrix import Fibre , Matrix
+from Lamina import Lamina
+from Laminate import Laminate
+from Load import Loading
+from Failure_Criterion import Failure_Criterion , Puck_Crterion
 from laminate_Tools import *
+
 
 if __name__ == "__main__":
 	a = Lamina(69e9 ,6e9 , 3e9 ,v21 = 0.354 ,Xt = 47e6 ,Xc = 14e6,\
@@ -33,25 +39,19 @@ if __name__ == "__main__":
 	LA.add_Lamina(c)
 
 	LA.update()
-	Load = Loading(0 ,0,0, 0 , 10, 0 )
-	Load.apple_to(LA)
-	print(LA.ABD)
-	print( Report_stress(Load,mode = '12'))
-	print (Report_strain(Load,mode = '12'))
+	laminate_step_failure(LA ,layer_num = 3 , ply = 0)
+	# LA.update()
+	# # print(LA.AB	D)
+	# Force = Loading(10 ,0,0, 0 , 0, 0 )
+	# Force.apple_to(LA)
+	
+	# print( Report_strain(Force,mode = '12'))
 
-	criterian = Failure_Criterion()
-	criterian.Tsai_Hill(Load)
-	ret =  criterian.ret_list
-	print( ret)
+	# Criterion = Failure_Criterion()
 
-	# criterian.Tsai_Hill(Load )
-	# ret =  criterian.ret_list
-	# print '----Tsai_Hill-->',ret
+	# Criterion.Tsai_Wu(Force,layer_num = None)
+	# print( Criterion.ret_list)
+	# for lam in LA.lamina_list:
+	# 	print(lam.fail_status['Mode'])
+ 
 
-	# criterian.Hoffman(Load )
-	# ret =  criterian.ret_list
-	# print '----Hoffman-->',ret
-	# print Report_stress(Load,layer_num = 11,mode = '12')
-	# plot_stress(Load,max_ten = 0,mode = 'xy',mode2 = '1')
-	# print Report_strain(Load,mode = '12')
-	plot_strain(Load,mode = '12',max_ten = None,mode2 = '1')

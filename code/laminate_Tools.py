@@ -455,6 +455,84 @@ def Report_puck(Load,Laminate,layer_num = None ,save = ''):
 
 	return frame
 
+########################################################
+#
+#draw strain - load with the failure of laminate
+#
+########################################################
+def laminate_step_failure(laminate , F = [10 ,0 ,0  ,0 ,0, 0] ,layer_num = 0 , ply = 0):
+	F =  np.array(F)
+	num = len( laminate.lamina_list )
+	
+	fail_status =  {"Failed?" : [False] * num, 
+			"Mode" : [""] * num,
+			"Load Factor" : [0] * num}
+
+	failed_count = [0, 0]
+	LF = 0.20	
+	LS = 1.02	 
+	
+	FF = []
+	plot_data = []
+	while failed_count[0] < num:
+		laminate.update()
+		Force = Loading( F * LF )
+		Force.apple_to(laminate)
+
+		Criterion = Failure_Criterion()
+
+		Criterion.Tsai_Wu(Force)
+		fail_list = Criterion.ret_list
+
+		FF.append(LF )
+		ss = Force.laminate_strains_12[layer_num * 3 ]  [ply]
+		plot_data.append(np.mean(ss))
+
+
+		for i in range(num):
+			sf = min(fail_list[i])
+
+			if sf < 1 and not fail_status["Failed?"][i]:
+				fail_status["Failed?"][i] = True
+
+				laminate.lamina_list[i].fail_status["Failed"] = True
+				 
+				fail_status["Mode"][i] = laminate.lamina_list[i].fail_status["Mode"]
+				fail_status["Load Factor"][i] = LF
+				failed_count[1] = failed_count[1] + 1
+				
+				print("Layer "+str(i)+" has failed. Mode: " + laminate.lamina_list[i].fail_status["Mode"])
+
+		# Increases LF if no new failure 
+		if failed_count[1] == failed_count[0]:	   
+			LF = LF*LS		
+			# print(LF*F)
+
+		failed_count[0] = failed_count[1]
+
+	fpf = min(fail_status["Load Factor"])
+	lpf = max(fail_status["Load Factor"])
+
+    # Prints results
+	print("First Ply Failure at LF: " + str(round(fpf)))
+	print("Last Ply Failure at LF: " + str(round(lpf)))
+	print("LPF / FPF : " + str(round(lpf/fpf, 1)))
+ 
+	plt.plot( plot_data , FF )
+
+	if ply == 0:
+		sig = r'$\sigma_1$'
+	elif ply == 1:
+		sig = r'$\sigma_2$'
+	elif ply == 2:
+		sig = r'$\tau_{12}$'
+
+	plt.xlabel( str(layer_num) + r'$_{st}$ ' + 'Strain  '+ sig )
+	plt.ylabel('Load Factor ' + r'$( _{ \times} F ) $')
+	plt.title(str(layer_num) + r'$_{st}$ ' + 'Strain  '+ sig + '  vs Load Factor')
+	plt.grid(True)
+
+	plt.show()
 if __name__ == "__main__":
 	# a = Lamina(5.4e4,1.8e4,8.8e3,v21 = 0.25,Xt = 1.05e3,Xc = 1.04e3,\
 	# 						Yt = 28,Yc = 140, S = 42,\
