@@ -44,3 +44,5 @@ if __name__ == "__main__":
 	a.E1 = 100000
 	print(a.E1)
 	print(b.E1)
+
+	print(1/2)

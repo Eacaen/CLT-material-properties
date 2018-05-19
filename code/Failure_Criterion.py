@@ -39,9 +39,9 @@ class Failure_Criterion(object):
 
 			sigma_1 = float(stress_ply[0])
 			sigma_2 = float(stress_ply[1])
-			tau_12  = float(stress_ply[2])
+			tau_12_12  = float(stress_ply[2])
 			self.__ret_centroid = (sigma_1 / Xt) **2 - (sigma_1 * sigma_2) / (Xt**2) + \
-								(sigma_2 / Yt) **2 + (tau_12 / S) **2
+								(sigma_2 / Yt) **2 + (tau_12_12 / S) **2
 			self.ret_list.append(self.__ret_centroid)
 
 		if layer_num == None:
@@ -59,10 +59,10 @@ class Failure_Criterion(object):
 				stress_ply = stress_Criterion[i]
 				sigma_1 = float(stress_ply[0])
 				sigma_2 = float(stress_ply[1])
-				tau_12  = float(stress_ply[2])
+				tau_12_12  = float(stress_ply[2])
 
 				self.__ret_centroid = (sigma_1 / Xt) **2 - (sigma_1 * sigma_2) / (Xt**2) + \
-									(sigma_2 / Yt) **2 + (tau_12 / S) **2
+									(sigma_2 / Yt) **2 + (tau_12_12 / S) **2
 				self.ret_list.append(self.__ret_centroid)
 
 
@@ -77,34 +77,36 @@ class Failure_Criterion(object):
 
 		if layer_num == None:
 			a,b,c = np.shape(stress_Criterion)
-			for i in range(1,a,3):
+
+			for i in range(0 , int(a/3.0)):
 				temp_ret =[]
-				layer_num = int((i-1)/3)
-				Xt = loading.laminate_loaded.lamina_list[layer_num].Xt
-				Xc = loading.laminate_loaded.lamina_list[layer_num].Xc
-				Yt = loading.laminate_loaded.lamina_list[layer_num].Yt
-				Yc = loading.laminate_loaded.lamina_list[layer_num].Yc
-				S  = loading.laminate_loaded.lamina_list[layer_num].S
+				 
+				Xt = loading.laminate_loaded.lamina_list[i].Xt
+				Xc = loading.laminate_loaded.lamina_list[i].Xc
+				Yt = loading.laminate_loaded.lamina_list[i].Yt
+				Yc = loading.laminate_loaded.lamina_list[i].Yc
+				S  = loading.laminate_loaded.lamina_list[i].S
 
-				f1 = 1.0/Xt - 1.0/Xc
-				f2 = 1.0/Yt - 1.0/Yc
+				f11 = 1/(Xt*Xc)
+				f22 = 1/(Yt*Yc)
+				f12 = -1/(2*(Xt*Xc*Yt*Yc)**(1/2))
+				f66 = 1/(S**2)
+				f1 = 1/Xt - 1/Xc
+				f2 = 1/Yt - 1/Yc
 
-				f11 = 1.0/(Xt*Xc)
-				f22 = 1.0/(Yt*Yc)
-				f12 = -1.0/(2*(Xt*Xc*Yt*Yc)**(1/2.0))
-				f66 = 1.0/(S**2)
 
-				for i in [0,2]:
-					stress_ply = stress_Criterion[layer_num*3+i]
+				for n in [0,1 , 2]:
+					stress_ply = stress_Criterion[ i * 3 + n]
 				
 					sigma_1 = float(stress_ply[0])
 					sigma_2 = float(stress_ply[1])
 					tau_12  =  float(stress_ply[2])
 
-					b = f1*sigma_1 + f2*sigma_2
 					a = f11*sigma_1**2 + f22*sigma_2**2 + f66*tau_12**2 + 2*f12*sigma_1*sigma_2
-					
-					sf = (-b + (b**2 + 4*a)**(1.0/2))/(2*a)
+					b = f1*sigma_1 + f2*sigma_2
+
+					sf = (-b + (b**2 + 4*a)**(1.0/2)) / (2*a)
+					# sf = 1/(a+b)
 
 					self.__ret_centroid = sf
 					temp_ret.append(self.__ret_centroid)
@@ -120,7 +122,7 @@ class Failure_Criterion(object):
 						mode = "matrix"        # matrix failure
 					else:
 						mode = "shear"        # shear failure
-					loading.laminate_loaded.lamina_list[layer_num].fail_status['Mode'] = mode
+					loading.laminate_loaded.lamina_list[i].fail_status['Mode'] = mode
 				self.ret_list.append( temp_ret )
 
 
@@ -144,10 +146,10 @@ class Failure_Criterion(object):
 
 			sigma_1 = float(stress_ply[0])
 			sigma_2 = float(stress_ply[1])
-			tau_12  = float(stress_ply[2])
+			tau_12_12  = float(stress_ply[2])
 			self.__ret_centroid = (sigma_1 / Xt) **2 - (sigma_1 * sigma_2) / (Xt*Xc) + (sigma_2)**2/(Yt*Yc) +\
 								sigma_1 * (Xt - Xc) /(Xt - Xc) - sigma_2 * (Yt * Yc)/(Yt - Yc)+ \
-								 	(tau_12 / S) **2
+								 	(tau_12_12 / S) **2
 			self.ret_list.append(self.__ret_centroid)
 
 		if layer_num == None:
@@ -165,11 +167,11 @@ class Failure_Criterion(object):
 				stress_ply = stress_Criterion[i]
 				sigma_1 = float(stress_ply[0])
 				sigma_2 = float(stress_ply[1])
-				tau_12  = float(stress_ply[2])
+				tau_12_12  = float(stress_ply[2])
 
 				self.__ret_centroid = (sigma_1 / Xt) **2 - (sigma_1 * sigma_2) / (Xt*Xc) + (sigma_2)**2/(Yt*Yc) +\
 								sigma_1 * (Xt - Xc) /(Xt - Xc) - sigma_2 * (Yt * Yc)/(Yt - Yc)+ \
-								 	(tau_12 / S) **2
+								 	(tau_12_12 / S) **2
 				self.ret_list.append(self.__ret_centroid)
 
 
@@ -209,7 +211,7 @@ class Puck_Crterion(object):
 
 			sigma_1 = float(stress_ply[0])
 			sigma_2 = float(stress_ply[1])
-			tau_12  = float(stress_ply[2])
+			tau_12_12  = float(stress_ply[2])
 
 			epsilion_1= float(strain_ply[0])
 			gamma_12 = float(strain_ply[2])
@@ -249,7 +251,7 @@ class Puck_Crterion(object):
 
 				sigma_1 = float(stress_ply[0])
 				sigma_2 = float(stress_ply[1])
-				tau_12  = float(stress_ply[2])
+				tau_12_12  = float(stress_ply[2])
 
 				epsilion_1= float(strain_ply[0])
 				gamma_12 = float(strain_ply[2])
@@ -283,7 +285,7 @@ class Puck_Crterion(object):
 
 			sigma_1 = float(stress_ply[0])
 			sigma_2 = float(stress_ply[1])
-			tau_12  = float(stress_ply[2])
+			tau_12_12  = float(stress_ply[2])
 
 			Xt = loading.laminate_loaded.lamina_list[layer_num].Xt
 			Xc = loading.laminate_loaded.lamina_list[layer_num].Xc
@@ -292,7 +294,7 @@ class Puck_Crterion(object):
 			S  = loading.laminate_loaded.lamina_list[layer_num].S
  
 			if sigma_2 > 0:
-				a = ( tau_12 /S)**2+(1-self.Pt*Yt/S)**2*(sigma_2/Yt)**2
+				a = ( tau_12_12 /S)**2+(1-self.Pt*Yt/S)**2*(sigma_2/Yt)**2
 				b = self.Pt * sigma_2 * 1.0 /S
 				c = abs(self.sigma_11D)
 				self.__ret_centroid = math.sqrt(a)+b+c
@@ -317,10 +319,10 @@ class Puck_Crterion(object):
 
 				sigma_1 = float(stress_ply[0])
 				sigma_2 = float(stress_ply[1])
-				tau_12  = float(stress_ply[2])
+				tau_12_12  = float(stress_ply[2])
 
 				if sigma_2 > 0:
-					a = ( tau_12 /S)**2+(1-self.Pt*Yt/S)**2*(sigma_2/Yt)**2
+					a = ( tau_12_12 /S)**2+(1-self.Pt*Yt/S)**2*(sigma_2/Yt)**2
 					b = self.Pt*sigma_2 * 1.0 /S
 					c = abs(self.sigma_11D)
 
@@ -346,7 +348,7 @@ class Puck_Crterion(object):
 
 			sigma_1 = float(stress_ply[0])
 			sigma_2 = float(stress_ply[1])
-			tau_12  = float(stress_ply[2])
+			tau_12_12  = float(stress_ply[2])
 
 			Xt = loading.laminate_loaded.lamina_list[layer_num].Xt
 			Xc = loading.laminate_loaded.lamina_list[layer_num].Xc
@@ -355,14 +357,14 @@ class Puck_Crterion(object):
 			S  = loading.laminate_loaded.lamina_list[layer_num].S
  			
 			Ra = Yc / (2.0 * (1+self.Pcc))
-			tau_12c = S * math.sqrt(1+2*self.Pcc)
+			tau_12_12c = S * math.sqrt(1+2*self.Pcc)
 
-			if sigma_2 < 0 and (abs(sigma_2 / tau_12) <= Ra / abs(tau_12c)):
+			if sigma_2 < 0 and (abs(sigma_2 / tau_12_12) <= Ra / abs(tau_12_12c)):
 				a = (1.0/S) 
 				b = self.Pc * sigma_2
 				c = abs(self.sigma_11D)
 
-				self.__ret_centroid = a * ( math.sqrt(tau_12**2+b**2) + b ) + c
+				self.__ret_centroid = a * ( math.sqrt(tau_12_12**2+b**2) + b ) + c
 				self.ret_list.append(self.__ret_centroid)
 			else:
 				self.ret_list.append(None)
@@ -384,18 +386,18 @@ class Puck_Crterion(object):
 
 				sigma_1 = float(stress_ply[0])
 				sigma_2 = float(stress_ply[1])
-				tau_12  = float(stress_ply[2])
+				tau_12_12  = float(stress_ply[2])
 
 
 				Ra = Yc / (2.0 * (1+self.Pcc))
-				tau_12c = S * math.sqrt(1+2*self.Pcc)
+				tau_12_12c = S * math.sqrt(1+2*self.Pcc)
 
-				if sigma_2 < 0 and (abs(sigma_2 / tau_12) <= Ra / abs(tau_12c)):
+				if sigma_2 < 0 and (abs(sigma_2 / tau_12_12) <= Ra / abs(tau_12_12c)):
 					a = (1.0/S) 
 					b = self.Pc*sigma_2
 					c = abs(self.sigma_11D)
 
-					self.__ret_centroid = a * ( math.sqrt(tau_12**2+b**2) + b ) +c
+					self.__ret_centroid = a * ( math.sqrt(tau_12_12**2+b**2) + b ) +c
 					self.ret_list.append(self.__ret_centroid)
 				else:
 					self.ret_list.append(None)
@@ -417,7 +419,7 @@ class Puck_Crterion(object):
 
 			sigma_1 = float(stress_ply[0])
 			sigma_2 = float(stress_ply[1])
-			tau_12  = float(stress_ply[2])
+			tau_12_12  = float(stress_ply[2])
 
 			Xt = loading.laminate_loaded.lamina_list[layer_num].Xt
 			Xc = loading.laminate_loaded.lamina_list[layer_num].Xc
@@ -426,10 +428,10 @@ class Puck_Crterion(object):
 			S  = loading.laminate_loaded.lamina_list[layer_num].S
  
 			Ra = Yc / (2.0 * (1+self.Pcc))
-			tau_12c = S * math.sqrt(1+2*self.Pcc)
+			tau_12_12c = S * math.sqrt(1+2*self.Pcc)
 
-			if sigma_2 < 0 and (abs(tau_12 / sigma_2 ) <= abs(tau_12c) / Ra):
-				a = ( tau_12/( 2.0*(1+self.Pcc)*S) )**2 + (sigma_2/Yc)**2
+			if sigma_2 < 0 and (abs(tau_12_12 / sigma_2 ) <= abs(tau_12_12c) / Ra):
+				a = ( tau_12_12/( 2.0*(1+self.Pcc)*S) )**2 + (sigma_2/Yc)**2
 				b = Yc / (-sigma_2)
 				c = abs(self.sigma_11D)
 
@@ -456,13 +458,13 @@ class Puck_Crterion(object):
 
 				sigma_1 = float(stress_ply[0])
 				sigma_2 = float(stress_ply[1])
-				tau_12  = float(stress_ply[2])
+				tau_12_12  = float(stress_ply[2])
 
 				Ra = Yc / (2.0 * (1+self.Pcc))
-				tau_12c = S * math.sqrt(1+2*self.Pcc)
+				tau_12_12c = S * math.sqrt(1+2*self.Pcc)
 
-				if sigma_2 < 0 and (abs(tau_12 / sigma_2 ) <= abs(tau_12c )/ Ra) :
-					a = ( tau_12 / (2.0*(1+self.Pcc)*S))**2 + (sigma_2/Yc)**2
+				if sigma_2 < 0 and (abs(tau_12_12 / sigma_2 ) <= abs(tau_12_12c )/ Ra) :
+					a = ( tau_12_12 / (2.0*(1+self.Pcc)*S))**2 + (sigma_2/Yc)**2
 					b = Yc / (-sigma_2)
 					c = abs(self.sigma_11D)
 

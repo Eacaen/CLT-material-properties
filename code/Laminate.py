@@ -46,7 +46,7 @@ class Laminate(object):
 
 
 	def update(self):
-		if self.updated == 0:
+		if True: #self.updated == 0:
 			self.THICK= 0.0
 			self.Qk = []   # collect the Q_bar from signal lamina
 			self.T_Stress =[]
@@ -62,7 +62,7 @@ class Laminate(object):
 
 		self.D = np.matrix([[0.0,0.0,0.0],[0.0,0.0,0.0],[0.0,0.0,0.0]])
 
-		for lamina in self.lamina_list[:]:
+		for lamina in self.lamina_list:
 
 			lamina.properities_degradation()
 			self.Qk.append(lamina.matrix_Q_bar)

@@ -20,7 +20,7 @@ class Loading(object):
 		self.load[5] = float(Mxy)
 
 		# self.laminate_loaded = 0
-		self.laminate_loaded = self #need check!!!!!!!!
+		self.laminate_loaded = [ ] #need check!!!!!!!!
 
 		self.laminate_stresses_12 = []
 		self.laminate_strains_12 = []

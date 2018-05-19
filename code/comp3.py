@@ -38,7 +38,8 @@ if __name__ == "__main__":
 	LA.add_Lamina(c)
 
 	LA.update()
-	# print(LA.AB	D)
+	bb = LA.ABD
+	print(LA.ABD)
 	Force = Loading(10 ,0,0, 0 , 0, 0 )
 	Force.apple_to(LA)
 	
@@ -51,8 +52,6 @@ if __name__ == "__main__":
 	for lam in LA.lamina_list:
 		print(lam.fail_status['Mode'])
  
-
-
 	num = len( LA.lamina_list )
 	
 	# Holds the analysis data through the loops
@@ -63,74 +62,62 @@ if __name__ == "__main__":
 	failed_count = [0, 0]
 	
 	# Load factor control
-	F = 10
 	LF = 0.20	   # Initial load factor
 	LS = 1.02	   # Load step multiplier
 	
 	# Holds results data (in order to plot later)
-	FF = []
 	plot_data = []
 
 	# Main Load Factor loop (increases when there's no new failure)
-	while failed_count[0] < num:
-
-		# for i in range(num):
-		# 	print(i , '  ----  '  , LA.lamina_list[i].E1)
+	if failed_count[0] < num:
 
 		LA.update()
-		Force = Loading( F * LF , 0 , 0 , 0 ,0 , 0 )
+		for lam in LA.lamina_list:
+			print(lam.E1)
+		aa = LA.ABD
+		print(aa)
+		Force = Loading( 100 * LF , 0 , 0 , 0 ,0 , 0 )
 		Force.apple_to(LA)
 
 		Criterion = Failure_Criterion()
 
 		Criterion.Tsai_Wu(Force,layer_num = None)
 		fail_list = Criterion.ret_list
-		# print( Criterion.ret_list)
+		print( Criterion.ret_list)
 
-		FF.append(LF)
-		ss = [Force.laminate_strains_12[i * 3] * 1E6 for i in range(num)]
-		plot_data.append(np.mean(ss))
-		# plot_data.append([LF , np.mean(Force.laminate_stresses_12)])
 
-		for i in range(num):
-			# print(fail_list[i])
-			# sf_inf = fail_list[i][0]
-			# sf_sup = fail_list[i][-1]
+	# 	for i in range(num):
+	# 		# print(fail_list[i])
+	# 		sf_inf = fail_list[i][0]
+	# 		sf_sup = fail_list[i][-1]
 
-			sf = min(fail_list[i])
-			# sf = min(sf_inf, sf_sup)
-			# print('sf------>  ',sf )
+	# 		sf = min(fail_list[i])
+	# 		# sf = min(sf_inf, sf_sup)
+	# 		# print('sf------>  ',sf )
 
-			if sf < 1 and not fail_status["Failed?"][i]:
-				fail_status["Failed?"][i] = True
-				# print('sf------>  ',sf )
-				LA.lamina_list[i].fail_status["Failed"] = True
-				 
-				# print('LA.lamina_list[i].E1' , '-', i, LA.lamina_list[i].E1)
-				fail_status["Mode"][i] = LA.lamina_list[i].fail_status["Mode"]
-				fail_status["Load Factor"][i] = LF
-				failed_count[1] = failed_count[1] + 1
+	# 		if sf < 1 and   fail_status["Failed?"][i] == False :
+	# 			fail_status["Failed?"][i] = True
+	# 			# print('sf------>  ',sf )
+	# 			LA.lamina_list[i].fail_status["Failed"] = True
 				
-			
-				print("Layer "+str(i)+" has failed. Mode: " + LA.lamina_list[i].fail_status["Mode"])
+	# 			# print('LA.lamina_list[i].E1' , '-', i, LA.lamina_list[i].E1)
+	# 			fail_status["Mode"][i] = LA.lamina_list[i].fail_status["Mode"]
+	# 			fail_status["Load Factor"][i] = LF
+	# 			failed_count[1] = failed_count[1] + 1
+	# 			print("Layer "+str(i)+" has failed. Mode: " + LA.lamina_list[i].fail_status["Mode"])
 
-		# Increases LF if no new failure 
-		if failed_count[1] == failed_count[0]:	   
-			LF = LF*LS		#increases Load Factor by 5%
-			# print([int(load) for load in LF*F if load>0])
-			print(LF*F)
+	# 	# Increases LF if no new failure 
+	# 	if failed_count[1] == failed_count[0]:	   
+	# 		LF = LF*LS		#increases Load Factor by 5%
+	# 		# print([int(load) for load in LF*F if load>0])
+	# 		print(LF)
 
-		failed_count[0] = failed_count[1]
+	# 	failed_count[0] = failed_count[1]
 
-	fpf = min(fail_status["Load Factor"])
-	lpf = max(fail_status["Load Factor"])
+	# fpf = min(fail_status["Load Factor"])
+	# lpf = max(fail_status["Load Factor"])
 
-    # Prints results
-	print("First Ply Failure at LF: " + str(round(fpf)))
-	print("Last Ply Failure at LF: " + str(round(lpf)))
-	print("LPF / FPF : " + str(round(lpf/fpf, 1)))
- 
-	print(FF , plot_data)
-
-	plt.plot( plot_data , FF)
-	plt.show()
+ #    # Prints results
+	# print("First Ply Failure at LF: " + str(round(fpf)))
+	# print("Last Ply Failure at LF: " + str(round(lpf)))
+	# print("LPF / FPF : " + str(round(lpf/fpf, 1)))

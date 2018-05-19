@@ -70,6 +70,7 @@ class Lamina(object):
 				self.E2  = self.E2 * pd
 				self.v12 = self.v12 * pd
 				self.G12 = self.G12 * pd
+				# self.v21 = self.v21 
 				self.v21 = self.v12 * self.E2 / self.E1
 
 			elif fail_type == "matrix":
@@ -79,8 +80,8 @@ class Lamina(object):
 				self.G12 = self.G12 * pd
 				self.v21 = self.v12 * self.E2 / self.E1
 
-			self.update_lamina_matrix()
-			self.fail_status['Failed'] = False
+		self.update_lamina_matrix()
+		self.fail_status['Failed'] = False
 			
 
 #************************************************************************

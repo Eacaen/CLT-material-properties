@@ -38,20 +38,25 @@ if __name__ == "__main__":
 	LA.add_Lamina(c)
 
 	LA.update()
-	Load = Loading(10000 ,0,0, 0 , 0, 0 )
-	Load.apple_to(LA)
-	print(LA.ABD)
 
+
+	Load = Loading(30 ,0,0, 0 , 0, 0 )
+	Load.apple_to(LA)
 
 	print( Report_stress(Load,mode = '12'))
 	print (Report_strain(Load,mode = '12'))
 	
+	Criterion = Failure_Criterion()
 
-	# Criterion = Failure_Criterion()
-
-	# Criterion.Tsai_Wu(Force,layer_num = None)
-	# print( Criterion.ret_list)
-	# for lam in LA.lamina_list:
-	# 	print(lam.fail_status['Mode'])
+	Criterion.Tsai_Wu(Load,layer_num = None)
+	print( Criterion.ret_list)
+	for lam in LA.lamina_list:
+		print(lam.fail_status['Mode'])
  
+	Load = Loading(37327 ,0,0, 0 , 0, 0 )
+	Load.apple_to(LA)
+	
+	Criterion = Failure_Criterion()
 
+	Criterion.Tsai_Wu(Load,layer_num = None)
+	print( Criterion.ret_list)
