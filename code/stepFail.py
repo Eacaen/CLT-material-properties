@@ -88,7 +88,7 @@ if __name__ == "__main__":
 		# print( Criterion.ret_list)
 
 		FF.append(LF)
-		ss = [Force.laminate_strains_12[i * 3] * 1E6 for i in range(num)]
+		ss = [Force.laminate_strains_12[i * 3] * 1E6 for i in range(num)][0][0]
 		plot_data.append(np.mean(ss))
 		# plot_data.append([LF , np.mean(Force.laminate_stresses_12)])
 
