@@ -19,7 +19,19 @@ Introduction
 - Show accurate calculate information of results, display figures of  stress&strain distribution; show the failure steps of chosen layer.
 
 ## Data flow of the Project
-<img src="fig/dataflow.png" data-canonical-src="fig/dataflow.png" />
+<img  width="1170" height="827" src="fig/dataflow.png" data-canonical-src="fig/dataflow.png" />
+
+## Task achieved:
+- [x] Use CLT to calculate  stresses and strains distribution in lamina & laminate in local and global coordinate systems
+- [x] Elastic modulus  calculate  for  lamina with [mixture of law , VDI2014 , Chamis model .....]
+- [x] Global elastic modulus  calculate  for  __laminate__ 
+- [x] Failure criteria [Tsai-Wu, Tsai-Hill, Hoffman, Max stress&strain ...]
+- [x] Display the figures and report accurate results
+- [x] Puck failure criteria
+- [ ] Thermal & moisture effects on CLT calculations
+- [ ] Database for Fibre and Matrix, laminate materials 
+- [ ] ...
+- [ ] 
 
 ## Brief intro
 ### Coordinate System
@@ -61,7 +73,7 @@ Run  failure analysis by adding load step by step , use *laminate_step_failure.p
   > It may take some more time to run the process
  
  
-<img  width="400" height="300" src="fig/failstep.png" data-canonical-src="fig/failstep.png" /><img  width="400" height="300"src="fig/failres.png" data-canonical-src="fig/failres.png" />
+<img  width="400" height="300" src="fig/failstep.png" data-canonical-src="fig/failstep.png" /><img  width="400" height="300" src="fig/failureStep.png" data-canonical-src="fig/failureStep.png" />
 
 
 *****************************************************
