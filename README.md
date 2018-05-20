@@ -4,8 +4,7 @@ Introduction
 
 | |CN|ENG|   |
 |---|----|-----|-----|
-|1|`复合材料层合板计算`|[Composite Material Calculation with CLT][CLT]| [Introduction](#composite-material-calculation-with-clt)|
-`read the program introduction for more details ` [Here](/doc/pro_introduction.pdf)  
+|1|`复合材料层合板计算`|[Composite Material Calculation with CLT][CLT]| [Introduction](#composite-material-calculation-with-clt)|`read the program introduction for more details ` [Here](/doc/pro_introduction.pdf)  
 
 [Running requirements](#running-requirements) | [Installation](#installation) | [License](#license) 
 
