@@ -8,7 +8,7 @@ Introduction
 
 [Running requirements](#running-requirements) | [Installation](#installation) | [License](#license) 
 
-<img align="right"  width="200" height="150"  src="fig/Composite_3d.png" data-canonical-src="fig/Composite_3d.png" />
+<img align="right"  width="400" height="300"  src="fig/Composite_3d.png" data-canonical-src="fig/Composite_3d.png" />
 
 #### Project code for Mechanics of Composite Structure IN NPU,PARTLY FINISH.
 #### ALL RIGHT RESERVED
