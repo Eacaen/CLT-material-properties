@@ -61,7 +61,7 @@ Run  failure analysis by adding load step by step , use *laminate_step_failure.p
   > It may take some more time to run the process
  
  
-<img  width="400" height="300" src="fig/failstep.png" data-canonical-src="fig/failstep.png" /><img  width="400" height="300"src="fig/fail_res.png" data-canonical-src="fig/fail_res.png" />
+<img  width="400" height="300" src="fig/failstep.png" data-canonical-src="fig/failstep.png" /><img  width="400" height="300"src="fig/failres.png" data-canonical-src="fig/failres.png" />
 
 
 *****************************************************
