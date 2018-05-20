@@ -490,7 +490,7 @@ def laminate_step_failure(laminate , F = [10 ,0 ,0  ,0 ,0, 0] ,layer_num = 0 , p
 				failed_count[1] = failed_count[1] + 1
 				
 				print("Layer "+str(i)+" has failed. Mode: " + laminate.lamina_list[i].fail_status["Mode"]\
-					+ 'at load ' + str ([int(load) for load in LF*F if load>0]))
+					+ '  ----> At load ' + str ([int(load) for load in LF*F if load>0]))
 
 		# Increases LF if no new failure 
 		if failed_count[1] == failed_count[0]:	   

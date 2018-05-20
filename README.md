@@ -19,7 +19,7 @@ Introduction
 - Show accurate calculate information of results, display figures of  stress&strain distribution; show the failure steps of chosen layer.
 
 ## Data flow of the Project
-<img  width="1170" height="827" src="fig/dataflow.png" data-canonical-src="fig/dataflow.png" />
+<img src="fig/dataflow.png" data-canonical-src="fig/dataflow.png" />
 
 ## Task achieved:
 - [x] Use CLT to calculate  stresses and strains distribution in lamina & laminate in local and global coordinate systems
