@@ -49,15 +49,13 @@ The calculation of laminate stress, strain and failure Criterion based on the Cl
 
 * The *laminate_Tools.py* can help to plot the stress and strain distribution in the laminate in the COS(xy or 12), print the results in _Excel_ formate  and save it in _Excel_.
 
-<figure class="half">
-	<img width="400" height="300" src="fig/strain_dis1.png" data-canonical-src="fig/strain_dis1.png" />
-	<img width="400" height="300" src="fig/stress_dis.png" data-canonical-src="fig/stress_dis.png" />
-</figure>
 
-<figure class="half">
-	<img width="400" height="300" src="fig/strain_dis2.png" data-canonical-src="fig/strain_dis2.png" />
-	<img width="400" height="300" src="fig/result.png" data-canonical-src="fig/result.png" />
-</figure>
+<img width="400" height="300" src="fig/strain_dis1.png" data-canonical-src="fig/strain_dis1.png" /><img width="400" height="300" src="fig/stress_dis.png" data-canonical-src="fig/stress_dis.png" />
+
+
+
+<img width="400" height="300" src="fig/strain_dis2.png" data-canonical-src="fig/strain_dis2.png" /><img width="400" height="300" src="fig/result.png" data-canonical-src="fig/result.png" />
+
 ## Run failure analysis
 Run  failure analysis by adding load step by step , use *laminate_step_failure.py* can  plot the Load Factor vs  the strain development of the chosen laminate, at the same it can mark the First Ply Failure and Last Ply Failure.
 
