@@ -5,10 +5,12 @@ Introduction
 | |CN|ENG|   |
 |---|----|-----|-----|
 |1|`复合材料层合板计算`|[Composite Material Calculation with CLT][CLT]| [Introduction](#composite-material-calculation-with-clt)|
-
-
 `read the program introduction for more details ` [Here](/doc/pro_introduction.pdf)  
 [Running requirements](#running-requirements) | [Installation](#installation) | [License](#license) 
+
+
+<img align="right"  width="200" height="150"  src="fig/Composite_3d.png" data-canonical-src="fig/Composite_3d.png" />
+
 #### Project code for Mechanics of Composite Structure IN NPU,PARTLY FINISH.
 #### ALL RIGHT RESERVED
 ********************************
