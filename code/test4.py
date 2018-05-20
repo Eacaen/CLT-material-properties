@@ -62,4 +62,4 @@ if __name__ == "__main__":
 	print( Criterion.ret_list)
 	# plot_stress(Load ,mode = '12',mode2 = '1')
 
-	plot_strain(Load,mode = '12',mode2 = '1')
+	plot_strain(Load,mode = 'xy',mode2 = 'x')
