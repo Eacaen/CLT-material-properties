@@ -31,7 +31,6 @@ Introduction
 - [ ] Thermal & moisture effects on CLT calculations
 - [ ] Database for Fibre and Matrix, laminate materials 
 - [ ] ...
-- [ ] 
 
 ## Brief intro
 ### Coordinate System
