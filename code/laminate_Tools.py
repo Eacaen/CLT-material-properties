@@ -181,40 +181,39 @@ def plot_stress(Load,layer_num = None,max_ten = None,max_com = None,\
 
 	if mode == '12':
 		stress_plot = Load.laminate_stresses_12
+		if mode2 == '1':
+			show_num = 0
+			x_str1 = r'$\sigma_1$'
+		elif mode2 == '2':
+			show_num = 1
+			x_str1 = r'$\sigma_2$' 
+		elif mode2 == '12':
+			show_num = 2
+			x_str1 = r'$\sigma_{12}$' 		
+		else:
+			print ('should choose a right strain to plot')
+			return
+
 	elif  mode == 'xy':
 		stress_plot = Load.laminate_stresses_xy
+		if mode2 == 'x':
+			show_num = 0
+			x_str1 = r'$\sigma_x$'
+		elif mode2 == '2':
+			show_num = 1
+			x_str1 = r'$\sigma_y$' 
+		elif mode2 == 'xy':
+			show_num = 2
+			x_str1 = r'$\sigma_{xy}$' 		
+		else:
+			print ('should choose a right strain to plot')
+			return
 	else:
 		print( 'mode_error')
-		return 
+		return
 
 	fig = plt.figure()
 	ax1 = fig.add_subplot(111)
-#-----------------------------------------------------------
-	if mode2 == '1':
-		show_num = 0
-		ax1.set_xlabel(r'$\sigma_1$',size = 18)
-	elif mode2 == 'x':
-		show_num = 0
-		ax1.set_xlabel(r'$\sigma_x$',size = 18)
-#-----------------------------------------------------------
-	elif mode2 == '2':
-		show_num = 1
-		ax1.set_xlabel(r'$\sigma_2$',size = 18)
-	elif mode2 == 'y':
-		show_num = 1
-		ax1.set_xlabel(r'$\sigma_y$',size = 18)
-#-----------------------------------------------------------
-	elif mode2 == 'z' or mode2 == 'xy':
-		show_num = 2
-		ax1.set_xlabel(r'$\sigma_{xy}$',size = 18)
-
-	elif mode2 == '3' or mode2 == '12':
-		show_num = 2
-		ax1.set_xlabel(r'$\sigma_{12}$',size = 18)	
-#-----------------------------------------------------------
-	else:
-		print ('should choose a right stress to plot')
-		return
 
 	if layer_num == None:
 		y = Load.laminate_loaded.Zk
@@ -245,18 +244,7 @@ def plot_stress(Load,layer_num = None,max_ten = None,max_com = None,\
 		yy.append(y_list[-1])
 #************************************************************************
 #	add the straight line to divide the lamina
-#************************************************************************
-		# for i in range(0, int(len(yy)/2) ):
-		# 	straigh_x = np.linspace(abs(sp[2*i])/10.0 , sp[2*i])
-		# 	straigh_y = [n*yy[2*i] for n in np.ones(len(straigh_x))]
-		# 	ax1.plot(straigh_x,straigh_y,color="r", lw=2.5)   
-
-		# straigh_x = np.linspace(abs(sp[len(yy)-1])/10.0 , sp[len(yy)-1])
-		# straigh_y = [n*yy[len(yy)-1] for n in np.ones(len(straigh_x))]
-		# ax1.plot(straigh_x,straigh_y ,color="r", lw=2.5)   
-
-		# for i in range(0, int(len(yy)/2) ):
-			
+#************************************************************************		
 		for j in range(0 , int(len(yy)-1) ):
 			plt.fill_betweenx( [ yy[j] ,  yy[j+1] ],
 		                              [ sp[j]  , sp[j+1]   ],
@@ -268,19 +256,15 @@ def plot_stress(Load,layer_num = None,max_ten = None,max_com = None,\
 #	set y axis range
 #************************************************************************
 		ax1.set_ylabel('Z(k)')
-		# ax1.set_ylim(y_list[0],y_list[-1])
+		ax1.set_xlabel(x_str1 ,size = 18)
 		plt.plot(sp,yy,'b')
 		ax1.plot([0]*len(yy) , yy , color="b", lw=2.5)
-		# print sp,yy
 
-		# for i in range(len(sp)-1):
-		# 	plt.fill_between([sp[i],sp[i+1] ],yy[i],yy[i+1], alpha=0.3)
 #************************************************************************
 #	move the x or y axis to the origin position
 #************************************************************************		ax1.yaxis.set_ticks_position('left')
 		ax1.spines['left'].set_position(('data', 0))
-		# ax1.xaxis.set_ticks_position('bottom')
-		# ax1.spines['bottom'].set_position(('data', 0))
+
 
 #************************************************************************
 #	add the max_criterion straight in the figure
@@ -314,34 +298,40 @@ def plot_strain(Load,layer_num = None,max_ten = None,max_com = None,\
 
 	if mode == '12':
 		strain_plot = Load.laminate_strains_12
+		if mode2 == '1':
+			show_num = 0
+			x_str1 = r'$\epsilon_1$'
+		elif mode2 == '2':
+			show_num = 1
+			x_str1 = r'$\epsilon_2$' 
+		elif mode2 == '12':
+			show_num = 2
+			x_str1 = r'$\epsilon_{12}$' 		
+		else:
+			print ('should choose a right strain to plot')
+			return
+
 	elif  mode == 'xy':
 		strain_plot = Load.laminate_strains_xy
+		if mode2 == 'x':
+			show_num = 0
+			x_str1 = r'$\epsilon_x$'
+		elif mode2 == '2':
+			show_num = 1
+			x_str1 = r'$\epsilon_y$' 
+		elif mode2 == 'xy':
+			show_num = 2
+			x_str1 = r'$\epsilon_{xy}$' 		
+		else:
+			print ('should choose a right strain to plot')
+			return
 	else:
 		print( 'mode_error')
 		return
 	fig = plt.figure()
 	ax1 = fig.add_subplot(111)
 
-	if mode2 == 'x' or mode2 == '1':
-		show_num = 0
-		x_str1 = r'$\epsilon_1$'
-
-	elif mode2 == 'y' or mode2 == '2':
-		show_num = 1
-		x_str1 = r'$\epsilon_2$' 
-
-	elif mode2 == 'z' or mode2 == 'xy':
-		show_num = 2
-		x_str1 = r'$\epsilon_{xy}$' 
-
-	elif mode2 == '3' or mode2 == '12':
-		show_num = 2
-		x_str1 = r'$\epsilon_{12}$' 	
-	else:
-		print ('should choose a right strain to plot')
-		return
    
-      
 	if layer_num == None:
 		y = Load.laminate_loaded.Zk
 		thk = Load.laminate_loaded.THICK / 2.0
@@ -382,8 +372,7 @@ def plot_strain(Load,layer_num = None,max_ten = None,max_com = None,\
 
 		ax1.yaxis.set_ticks_position('left')
 		ax1.spines['left'].set_position(('data', 0))
-		# ax1.xaxis.set_ticks_position('bottom')
-		# ax1.spines['bottom'].set_position(('data', 0))
+
 
 		if max_ten != None:
 			max_ten = max_ten*10**dots
@@ -488,7 +477,6 @@ def laminate_step_failure(laminate , F = [10 ,0 ,0  ,0 ,0, 0] ,layer_num = 0 , p
 		ss = Force.laminate_strains_12[layer_num * 3 ]  [ply]
 		plot_data.append(np.mean(ss))
 
-
 		for i in range(num):
 			sf = min(fail_list[i])
 
@@ -501,12 +489,13 @@ def laminate_step_failure(laminate , F = [10 ,0 ,0  ,0 ,0, 0] ,layer_num = 0 , p
 				fail_status["Load Factor"][i] = LF
 				failed_count[1] = failed_count[1] + 1
 				
-				print("Layer "+str(i)+" has failed. Mode: " + laminate.lamina_list[i].fail_status["Mode"])
+				print("Layer "+str(i)+" has failed. Mode: " + laminate.lamina_list[i].fail_status["Mode"]\
+					+ 'at load ' + str ([int(load) for load in LF*F if load>0]))
 
 		# Increases LF if no new failure 
 		if failed_count[1] == failed_count[0]:	   
 			LF = LF*LS		
-			# print(LF*F)
+			# print([ load for load in LF*F if load>0])
 
 		failed_count[0] = failed_count[1]
 
@@ -516,8 +505,18 @@ def laminate_step_failure(laminate , F = [10 ,0 ,0  ,0 ,0, 0] ,layer_num = 0 , p
     # Prints results
 	print("First Ply Failure at LF: " + str(round(fpf)))
 	print("Last Ply Failure at LF: " + str(round(lpf)))
-	print("LPF / FPF : " + str(round(lpf/fpf, 1)))
- 
+	print("last ply failure / first ply failure : " + str(round(lpf/fpf, 1)))
+
+	plt.annotate(r'$1_{st}F$', xy=(plot_data[FF.index(fpf)], fpf ), 
+                     xytext=(plot_data[FF.index(fpf)], fpf ),
+                     arrowprops=dict(facecolor='blue'),
+                    )
+
+	plt.annotate('LF', xy=(plot_data[-1], FF[-1]), 
+                     xytext=(plot_data[-1], FF[-1]),
+                     arrowprops=dict(facecolor='red'),
+                    )
+
 	plt.plot( plot_data , FF )
 
 	if ply == 0:
@@ -558,7 +557,7 @@ if __name__ == "__main__":
 
 	LA.update()
 
-	Load = Loading(0,0,0,0,90,0)
+	Load = Loading([0,0,0,0,90,0])
 	Load.apple_to(LA)
 
 	print( Report_stress(Load,mode = '12'))

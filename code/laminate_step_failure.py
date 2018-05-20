@@ -39,7 +39,7 @@ if __name__ == "__main__":
 	LA.add_Lamina(c)
 
 	LA.update()
-	laminate_step_failure(LA ,layer_num = 3 , ply = 0)
+	laminate_step_failure(LA ,layer_num = 0 , ply = 0)
 	# LA.update()
 	# # print(LA.AB	D)
 	# Force = Loading(10 ,0,0, 0 , 0, 0 )
