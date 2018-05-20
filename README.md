@@ -25,9 +25,13 @@ Introduction
 ### Coordinate System
  * xy is the Global System for __laminate__
  * 12 is the Local system for __lamina__
- 
-<img src="fig/laminate_COS.png" data-canonical-src="fig/laminate_COS.png" />
-<img src="fig/lammmm.png" data-canonical-src="png/lammmm.png" />
+
+<figure class="half">
+	<img src="fig/laminate_COS.png" data-canonical-src="fig/laminate_COS.png" />
+	<img src="fig/lammmm.png" data-canonical-src="png/lammmm.png" />
+</figure>
+
+
 
 ### Composite Material Calculation with CLT
 * The main package is a Python composite materials calculation package.
