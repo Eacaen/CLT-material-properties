@@ -135,17 +135,22 @@ class Lamina(object):
 ##################################################
 #************************************************************************						
 		if fibre!=None and matrix!=None:
-			self.Xt = Xt
-			self.Xc = Xc
-			self.Yt = Yt
-			self.Yc = Yc
-			self.S  = S
+			self.Xt = self.fibre.Xt * fv + (self.matrix.Em*self.fibre.Xt/self.fibre.Ef1) * mv
+			self.Xc = 2.0 * fv*math.sqrt(fv*self.fibre.Ef1*self.matrix.Em)
+			# self.Xc = self.matrix.Gm / mv
+			self.Yt = self.Xt
+#***************************************************************
+# the transverse compressive strength is
+# about 4-7 times the transverse tensile strength
+#***************************************************************
+			self.Yc =  self.Yt #* 5
+			self.S  = 2.0 * (self.fibre.S * fv + self.matrix.S * mv)
 
-			self.E1 = self.fibre.Ef1 * fm + self.matrix.Em * mm
-			self.E2  = (self.fibre.Ef2 * self.matrix.Em) / (self.matrix.Em * fm + self.fibre.Ef2 * mm )		
-			self.G12 = self.fibre.Gf12 * self.matrix.Gm / (self.fibre.Gf12 * mm + self.matrix.Gm * fm)
+			self.E1 = self.fibre.Ef1 * fv + self.matrix.Em * mv
+			self.E2  = (self.fibre.Ef2 * self.matrix.Em) / (self.matrix.Em * fv + self.fibre.Ef2 * mv )		
+			self.G12 = self.fibre.Gf12 * self.matrix.Gm / (self.fibre.Gf12 * mv + self.matrix.Gm * fv)
 
-			self.v21 = self.fibre.vf21 * fm + matrix.vm * mm
+			self.v21 = self.fibre.vf21 * fv + matrix.vm * mv
 			self.v12 = self.v21 * self.E2 / self.E1
 
 		

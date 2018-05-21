@@ -23,7 +23,7 @@ if __name__ == "__main__":
 				Yt = 24e6 ,Yc  = 18e6, S = 75e6,\
 				angle = 90,thickness=0.125e-3)
 
-	LA = Laminate()
+	LA = Laminate(degradation = 1e-9)
 	LA.add_Lamina(c)
 	LA.add_Lamina(a)
 	LA.add_Lamina(b)
@@ -38,8 +38,8 @@ if __name__ == "__main__":
 	LA.add_Lamina(a)
 	LA.add_Lamina(c)
 
-	LA.update()
-	laminate_step_failure(LA ,layer_num = 0 , ply = 0)
+	# LA.update()
+	laminate_step_failure(LA ,layer_num = 0 , ply = 0 , display = 1)
 	# LA.update()
 	# # print(LA.AB	D)
 	# Force = Loading(10 ,0,0, 0 , 0, 0 )

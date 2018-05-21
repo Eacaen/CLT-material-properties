@@ -38,11 +38,12 @@ if __name__ == "__main__":
 
 	LA.update()
 
+	Force = Loading([59582.40508362695  ,0,0, 0 , 0, 0])
+	Force.apple_to(LA)
+	
+	# print( Report_strain(Force,mode = '12'))
 
-	print(a.E1)
-	print(b.E1)
-	a.E1 = 100000
-	print(a.E1)
-	print(b.E1)
+	Criterion = Failure_Criterion()
 
-	print(1/2)
+	Criterion.Tsai_Wu(Force )
+	print( Criterion.ret_list)

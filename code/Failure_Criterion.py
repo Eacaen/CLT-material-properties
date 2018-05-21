@@ -76,14 +76,14 @@ class Failure_Criterion(object):
 			for n in [0,1 , 2]:
 				stress_ply = stress_Criterion[ i * 3 + n]
 				
-				sigma_1 = float(stress_ply[0])
-				sigma_2 = float(stress_ply[1])
-				tau_12  =  float(stress_ply[2])
+				sigma_1 = np.array(stress_ply[0])[0][0]
+				sigma_2 = np.array(stress_ply[1])[0][0]
+				tau_12  =  np.array(stress_ply[2])[0][0]
 
 				a = f11*sigma_1**2 + f22*sigma_2**2 + f66*tau_12**2 + 2*f12*sigma_1*sigma_2
 				b = f1*sigma_1 + f2*sigma_2
 
-				sf = (-b + (b**2 + 4*a)**(1.0/2)) / (2*a)
+				sf = (-b + (b**2 + 4*a)**(1/2)) / (2*a)
 					# sf = 1/(a+b)
 
 				self.__ret_centroid = sf

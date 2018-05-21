@@ -449,7 +449,7 @@ def Report_puck(Load,Laminate,layer_num = None ,save = ''):
 #draw strain - load with the failure of laminate
 #
 ########################################################
-def laminate_step_failure(laminate , F = [10 ,0 ,0  ,0 ,0, 0] ,layer_num = 0 , ply = 0):
+def laminate_step_failure(laminate , F = [10 ,0 ,0  ,0 ,0, 0] ,layer_num = 0 , ply = 0 , display = True):
 	F =  np.array(F)
 	num = len( laminate.lamina_list )
 	
@@ -458,11 +458,12 @@ def laminate_step_failure(laminate , F = [10 ,0 ,0  ,0 ,0, 0] ,layer_num = 0 , p
 			"Load Factor" : [0] * num}
 
 	failed_count = [0, 0]
-	LF = 0.20	
-	LS = 1.02	 
+	LF = 0.10	
+	LS = 1.01	 
 	
 	FF = []
 	plot_data = []
+	print("Failure analysis start running ------->>>")
 	while failed_count[0] < num:
 		laminate.update()
 		Force = Loading( F * LF )
@@ -479,7 +480,6 @@ def laminate_step_failure(laminate , F = [10 ,0 ,0  ,0 ,0, 0] ,layer_num = 0 , p
 
 		for i in range(num):
 			sf = min(fail_list[i])
-
 			if sf < 1 and not fail_status["Failed?"][i]:
 				fail_status["Failed?"][i] = True
 
@@ -492,20 +492,21 @@ def laminate_step_failure(laminate , F = [10 ,0 ,0  ,0 ,0, 0] ,layer_num = 0 , p
 				print("Layer "+str(i)+" has failed. Mode: " + laminate.lamina_list[i].fail_status["Mode"]\
 					+ '  ----> At load ' + str ([int(load) for load in LF*F if load>0]))
 
-		# Increases LF if no new failure 
 		if failed_count[1] == failed_count[0]:	   
-			LF = LF*LS		
-			# print([ load for load in LF*F if load>0])
+			LF = LF*LS
+			if display:		
+				print([ load for load in LF*F if load>0])
 
-		failed_count[0] = failed_count[1]
+		elif failed_count[1] != failed_count[0]:
+			failed_count[0] = failed_count[1]
 
 	fpf = min(fail_status["Load Factor"])
 	lpf = max(fail_status["Load Factor"])
 
     # Prints results
-	print("First Ply Failure at LF: " + str(round(fpf)))
-	print("Last Ply Failure at LF: " + str(round(lpf)))
-	print("last ply failure / first ply failure : " + str(round(lpf/fpf, 1)))
+	print("First Ply Failure at LF: " + str(round(fpf) * F ))
+	print("Last Ply Failure at LF: " + str(round(lpf) * F ))
+	print("last ply failure / first ply failure : " + str(round(lpf/fpf, 4)))
 
 	plt.annotate(r'$1_{st}F$', xy=(plot_data[FF.index(fpf)], fpf ), 
                      xytext=(plot_data[FF.index(fpf)], fpf ),
@@ -520,9 +521,9 @@ def laminate_step_failure(laminate , F = [10 ,0 ,0  ,0 ,0, 0] ,layer_num = 0 , p
 	plt.plot( plot_data , FF )
 
 	if ply == 0:
-		sig = r'$\sigma_1$'
+		sig = r'$\varepsilon_1$'
 	elif ply == 1:
-		sig = r'$\sigma_2$'
+		sig = r'$\varepsilon_2$'
 	elif ply == 2:
 		sig = r'$\tau_{12}$'
 
@@ -531,7 +532,8 @@ def laminate_step_failure(laminate , F = [10 ,0 ,0  ,0 ,0, 0] ,layer_num = 0 , p
 	plt.title(str(layer_num) + r'$_{st}$ ' + 'Strain  '+ sig + '  vs Load Factor')
 	plt.grid(True)
 
-	plt.show()
+	if display:
+		plt.show()
 if __name__ == "__main__":
 	# a = Lamina(5.4e4,1.8e4,8.8e3,v21 = 0.25,Xt = 1.05e3,Xc = 1.04e3,\
 	# 						Yt = 28,Yc = 140, S = 42,\

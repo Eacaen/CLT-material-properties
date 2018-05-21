@@ -10,23 +10,23 @@ class Loading(object):
 		super(Loading, self).__init__()
 		self.Nx = Nx ; self.Ny = Ny ; self.Nxy = Nxy
 		self.Mx = Mx ; self.My = My ; self.Mxy = Mxy
-		self.load = np.zeros((6,1),dtype = np.float64)
-
+		# self.load = np.zeros((6,1),dtype = np.64)
+		self.load = np.zeros((6,1))
 		if F ==[]:
-			self.load[0] = float(Nx)
-			self.load[1] = float(Ny)
-			self.load[2] = float(Nxy)
-			self.load[3] = float(Mx)
-			self.load[4] = float(My)
-			self.load[5] = float(Mxy)
+			self.load[0] = (Nx)
+			self.load[1] = (Ny)
+			self.load[2] = (Nxy)
+			self.load[3] = (Mx)
+			self.load[4] = (My)
+			self.load[5] = (Mxy)
 			
 		elif  F != []:
-			self.load[0] = float(F[0])
-			self.load[1] = float(F[1])
-			self.load[2] = float(F[2])
-			self.load[3] = float(F[3])
-			self.load[4] = float(F[4])
-			self.load[5] = float(F[5])			
+			self.load[0] = (F[0])
+			self.load[1] = (F[1])
+			self.load[2] = (F[2])
+			self.load[3] = (F[3])
+			self.load[4] = (F[4])
+			self.load[5] = (F[5])			
 		# self.laminate_loaded = 0
 		self.laminate_loaded = [ ] #need check!!!!!!!!
 
@@ -115,12 +115,12 @@ class Loading(object):
 
 
 	def change_Load(self, Nx = 0 , Ny = 0, Nxy = 0,Mx = 0,My = 0,Mxy = 0):
-		self.load = np.zeros((6,1),dtype = np.float64)
+		self.load = np.zeros((6,1))
 		self.Nx = Nx ; self.Ny = Ny ; self.Nxy = Nxy
 		self.Mx = Mx ; self.My = My ; self.Mxy = Mxy
-		self.load[0] = float(Nx)
-		self.load[1] = float(Ny)
-		self.load[2] = float(Nxy)
-		self.load[3] = float(Mx)
-		self.load[4] = float(My)
-		self.load[5] = float(Mxy)
+		self.load[0] = (Nx)
+		self.load[1] = (Ny)
+		self.load[2] = (Nxy)
+		self.load[3] = (Mx)
+		self.load[4] = (My)
+		self.load[5] = (Mxy)
