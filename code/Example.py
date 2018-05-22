@@ -8,15 +8,15 @@ from laminate_Tools import *
 
 
 if __name__ == "__main__":
-	a = Lamina(5.4e10 ,1.8e10 , 8.8e7 ,v21 = 0.25  ,Xt = 1.05e6 ,Xc = 1.05e6,\
-				Yt = 2.8e6 ,Yc = 14e6, S = 4.2e6,\
+	a = Lamina(5.4e10 ,1.8e10 , 8.8e9 ,v21 = 0.25  ,Xt = 1.05e9 ,Xc = 1.05e9,\
+				Yt = 28e6 ,Yc = 14e6, S = 42e6,\
 				angle = 0,thickness=1)
 
-	b = Lamina(5.4e10 ,1.8e10 , 8.8e7 ,v21 = 0.25  ,Xt = 1.05e6 ,Xc = 1.05e6,\
-				Yt = 2.8e6 ,Yc = 14e6, S = 4.2e6,\
+	b = Lamina(5.4e10 ,1.8e10 , 8.8e9 ,v21 = 0.25  ,Xt = 1.05e9 ,Xc = 1.05e9,\
+				Yt = 28e6 ,Yc = 14e6, S = 42e6,\
 				angle = 90,thickness=10)
 
-	LA = Laminate(degradation = 1)
+	LA = Laminate(degradation = 1e-3)
 	LA.add_Lamina(a)
 	LA.add_Lamina(b)
 	LA.add_Lamina(a)

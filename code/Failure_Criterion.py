@@ -41,12 +41,27 @@ class Failure_Criterion(object):
 				sigma_2 = float(stress_ply[1])
 				tau_12  =  float(stress_ply[2])
 
+
 				sf = (sigma_1 / Xt) **2 - (sigma_1 * sigma_2) / (Xt**2) + \
 								(sigma_2 / Yt) **2 + (tau_12 / S) **2
 				
 				self.__ret_centroid = sf
 				temp_ret.append(self.__ret_centroid)
 
+			    # Failure mode calculations  
+				H1 = abs( (sigma_1 / Xt) **2 )
+				H2 = abs( (sigma_2 / Yt) **2 )
+				H6 = abs((tau_12 / S) **2 )
+				 
+				if max(H1,H2,H6) == H1:
+					mode = "fiber"        # fiber failure
+				elif max(H1,H2,H6) == H2:
+					mode = "matrix"        # matrix failure
+				else:
+					mode = "shear"        # shear failure
+					
+				loading.laminate_loaded.lamina_list[i].fail_status['Mode'] = mode
+			
 			self.ret_list.append( temp_ret )
 
 	def Tsai_Wu(self,loading ):
@@ -83,9 +98,9 @@ class Failure_Criterion(object):
 				a = f11*sigma_1**2 + f22*sigma_2**2 + f66*tau_12**2 + 2*f12*sigma_1*sigma_2
 				b = f1*sigma_1 + f2*sigma_2
 
-				sf = (-b + (b**2 + 4*a)**(1/2)) / (2*a)
-					# sf = 1/(a+b)
-
+				# sf = (-b + (b**2 + 4*a)**(1/2)) / (2*a)
+				# sf = 1.0/(a+b)
+				sf = (a+b)
 				self.__ret_centroid = sf
 				temp_ret.append(self.__ret_centroid)
 				
@@ -97,7 +112,7 @@ class Failure_Criterion(object):
 				if max(H1,H2,H6) == H1:
 					mode = "fiber"        # fiber failure
 				elif max(H1,H2,H6) == H2:
-						mode = "matrix"        # matrix failure
+					mode = "matrix"        # matrix failure
 				else:
 					mode = "shear"        # shear failure
 				loading.laminate_loaded.lamina_list[i].fail_status['Mode'] = mode

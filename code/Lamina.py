@@ -81,6 +81,7 @@ class Lamina(object):
 				self.v21 = self.v12 * self.E2 / self.E1
 
 		self.update_lamina_matrix()
+		
 		self.fail_status['Failed'] = False
 			
 

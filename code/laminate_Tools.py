@@ -471,7 +471,9 @@ def laminate_step_failure(laminate , F = [10 ,0 ,0  ,0 ,0, 0] ,layer_num = 0 , p
 
 		Criterion = Failure_Criterion()
 
-		Criterion.Tsai_Wu(Force)
+		# Criterion.Tsai_Wu(Force)
+		Criterion.Tsai_Hill(Force)
+		
 		fail_list = Criterion.ret_list
 
 		FF.append(LF )
@@ -479,15 +481,28 @@ def laminate_step_failure(laminate , F = [10 ,0 ,0  ,0 ,0, 0] ,layer_num = 0 , p
 		plot_data.append(np.mean(ss))
 
 		for i in range(num):
-			sf = min(fail_list[i])
-			if sf < 1 and not fail_status["Failed?"][i]:
+			# sf = min(fail_list[i])
+			# con1 =  ( sf < 1 and not fail_status["Failed?"][i] ) 
+
+			sf = max(fail_list[i])
+			con1 =  ( sf > 1 and  fail_status["Failed?"][i] == False ) 
+
+			con2 = ( fail_status["Failed?"][i]== True or \
+			 fail_status["Mode"][i] =="shear" and fail_status["Mode"][i] =="matrix" )
+			if con1 or con2  :
 				fail_status["Failed?"][i] = True
 
 				laminate.lamina_list[i].fail_status["Failed"] = True
 				 
 				fail_status["Mode"][i] = laminate.lamina_list[i].fail_status["Mode"]
 				fail_status["Load Factor"][i] = LF
-				failed_count[1] = failed_count[1] + 1
+				if con1:
+					failed_count[1] = failed_count[1] + 1
+
+				# if con2 and sf > 1 and fail_status["Mode"][i] == "fibre":
+				if con2  and fail_status["Mode"][i] == "fibre":
+					failed_count[1] = failed_count[1] + 1
+					print("--->>> Layer "+str(i)+" has failed. Mode: Fibre ")
 				
 				print("Layer "+str(i)+" has failed. Mode: " + laminate.lamina_list[i].fail_status["Mode"]\
 					+ '  ----> At load ' + str ([int(load) for load in LF*F if load>0]))
@@ -497,8 +512,13 @@ def laminate_step_failure(laminate , F = [10 ,0 ,0  ,0 ,0, 0] ,layer_num = 0 , p
 			if display:		
 				print([ load for load in LF*F if load>0])
 
-		elif failed_count[1] != failed_count[0]:
-			failed_count[0] = failed_count[1]
+		failed_count[0] = failed_count[1]
+
+		if np.linalg.norm(LF) > 1e10:
+			break
+
+		if failed_count[0] > num or failed_count[0] == num:
+			break
 
 	fpf = min(fail_status["Load Factor"])
 	lpf = max(fail_status["Load Factor"])
