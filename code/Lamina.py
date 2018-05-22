@@ -70,8 +70,8 @@ class Lamina(object):
 				self.E2  = self.E2 * pd
 				self.v12 = self.v12 * pd
 				self.G12 = self.G12 * pd
-				# self.v21 = self.v21 
-				self.v21 = self.v12 * self.E2 / self.E1
+				self.v21 = self.v21 
+				# self.v21 = self.v12 * self.E2 / self.E1
 
 			elif fail_type == "matrix":
 				self.E1  = self.E1

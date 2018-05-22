@@ -91,6 +91,15 @@ Run  failure analysis by adding load step by step , use *laminate_step_failure.p
 ### License
 #### Project code for Mechanics of Composite Structure IN NPU,PARTLY FINISH.
 #### ALL RIGHT RESERVE
+
+*****************************************************
+
+#### Debugs log
+
+- [x] The __fibre__ and __fiber__  mixed used, can not enter *fibre failure* mode.
+- [x] Run the load in a large enough scales to get the failure step curve, how to how to distinguish the lamina has failed?
+- [ ] how to distinguish the lamina has failed? the matrix of fiber failure. The test example shows the fuzzy answer.
+
 ---------------------------------------------------------
 [CLT]:https://github.com/Eacaen/CLT-material-properties  "CLT"
  

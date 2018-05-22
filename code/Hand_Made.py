@@ -53,7 +53,8 @@ if __name__ == "__main__":
 	LA.add_Lamina(a_45)
 	LA.add_Lamina(a45)
 
-	laminate_step_failure(LA ,  F = [1e4 ,0 ,0  ,0 ,0, 0] ,layer_num = 0 , ply = 0 , display = 1)
+	laminate_step_failure(LA ,  F = [1e4 ,0 ,0  ,0 ,0, 0] ,layer_num = 0, ply = 0 ,\
+		Max_Load = 1e20  , display = 1)
 
 	LA.update()
 
