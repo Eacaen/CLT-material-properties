@@ -474,8 +474,8 @@ def laminate_step_failure(laminate , F = [10 ,0 ,0  ,0 ,0, 0] ,layer_num = 0 , \
 
 		Criterion = Failure_Criterion()
 
-		# Criterion.Tsai_Wu(Force)
-		Criterion.Tsai_Hill(Force)
+		Criterion.Tsai_Wu(Force)
+		# Criterion.Tsai_Hill(Force)
 		
 		fail_list = Criterion.ret_list
 
@@ -503,6 +503,7 @@ def laminate_step_failure(laminate , F = [10 ,0 ,0  ,0 ,0, 0] ,layer_num = 0 , \
 				fail_status["Load Factor"][i] = LF
 
 				Load_Factor.append(LF)
+				
 				if con1:
 					failed_count[1] = failed_count[1] + 1
 
@@ -513,7 +514,7 @@ def laminate_step_failure(laminate , F = [10 ,0 ,0  ,0 ,0, 0] ,layer_num = 0 , \
 					+ '  ----> At load ' + str ([int(load) for load in LF*F if load>0]))
 				
 
-				if con2  and fail_status["Mode"][i] == "fiber":
+				if con2  and (fail_status["Mode"][i] == "fiber" or fail_status["Mode"][i] == "shear"):
 					failed_count[1] = failed_count[1] + 1
 
 					failed_count[2] = failed_count[2] + 1
