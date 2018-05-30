@@ -10,7 +10,7 @@ class Lamina(object):
 	name_list = []
 	def __init__(self,E1 = 0, E2 = 0, G12 = 0,v12 = 0,v21 = 0,density=0,\
 			Xt = 0, Xc = 0,Yt = 0, Yc = 0, S = 0,max_stain_t = 0,max_stain_c=0,\
-			angle = 0,thickness = 0,\
+			angle = 0,thickness = 0, fibre_volume = 0,\
 			fibre=None,matrix=None,name = 'Material_'):
 		super(Lamina, self).__init__()
 		self.E1 = E1
@@ -45,6 +45,8 @@ class Lamina(object):
 
 		self.angle = angle
 		self.thickness = thickness
+
+		self.fibre_volume = fibre_volume
 
 		if fibre!=None and matrix!=None:
 			raise 'Error, please use function [- Fibre_Matrix_Lamina -]\n'
@@ -102,7 +104,10 @@ class Lamina(object):
 		else:
 			self.matrix = Matrix()
 
+		self.fibre_volume = fibre_volume
+
 		fm = fibre_mass   ; mm = 1.0 - fm 
+
 		fv = fibre_volume ; mv = 1.0 - fv
 
 #************************************************************************
@@ -136,23 +141,31 @@ class Lamina(object):
 ##################################################
 #************************************************************************						
 		if fibre!=None and matrix!=None:
-			self.Xt = self.fibre.Xt * fv + (self.matrix.Em*self.fibre.Xt/self.fibre.Ef1) * mv
-			self.Xc = 2.0 * fv*math.sqrt(fv*self.fibre.Ef1*self.matrix.Em)
-			# self.Xc = self.matrix.Gm / mv
-			self.Yt = self.Xt
+			if Xt== 0 and Xc == 0 and Yt == 0 and Yc == 0 and S == 0:
+				self.Xt = self.fibre.Xt * fv + (self.matrix.Em*self.fibre.Xt/self.fibre.Ef1) * mv
+				self.Xc = 2.0 * fv*math.sqrt(fv*self.fibre.Ef1*self.matrix.Em)
+				# self.Xc = self.matrix.Gm / mv
+				self.Yt = self.Xt
 #***************************************************************
 # the transverse compressive strength is
 # about 4-7 times the transverse tensile strength
 #***************************************************************
-			self.Yc =  self.Yt #* 5
-			self.S  = 2.0 * (self.fibre.S * fv + self.matrix.S * mv)
+				self.Yc =  self.Yt * 5
+				self.S  = 2.0 * (self.fibre.S * fv + self.matrix.S * mv)
+			else:
+				self.Xt = Xt
+				self.Xc = Xc
+				self.Yt = Yt
+				self.Yc = Yc
+				self.S  = S
+
 
 			self.E1 = self.fibre.Ef1 * fv + self.matrix.Em * mv
 			self.E2  = (self.fibre.Ef2 * self.matrix.Em) / (self.matrix.Em * fv + self.fibre.Ef2 * mv )		
 			self.G12 = self.fibre.Gf12 * self.matrix.Gm / (self.fibre.Gf12 * mv + self.matrix.Gm * fv)
 
-			self.v21 = self.fibre.vf21 * fv + matrix.vm * mv
-			self.v12 = self.v21 * self.E2 / self.E1
+			self.v12 = self.fibre.vf12 * fv + matrix.vm * mv
+			self.v21 = self.v12 * self.E2 / self.E1
 
 		
 		elif matrix == None and fibre != None:
@@ -188,15 +201,25 @@ class Lamina(object):
 
 		self.update_lamina_matrix()
 
-	def Chamis_Model(self , fibre_a , matrix_b):
-		Kf = fibre_a**2 *1.0 / matrix_b**2
+	def Chamis_Model(self):
+		Kf = self.fibre_volume
 		Km = 1 - Kf
 		self.E1 = self.fibre.Ef1 * Kf + self.matrix.Em * Km
 		self.E2 = (1 - math.sqrt(Kf) ) * self.matrix.Em + \
 			math.sqrt(Kf)  * self.matrix.Em / (1 - math.sqrt(Kf) *(1 - self.matrix.Em/self.fibre.Ef2) )
 
 		self.G12 = self.matrix.Gm / (1-math.sqrt(Kf) *(1 - self.matrix.Gm/self.fibre.Gf12))
-		self.v12 = (1 - math.sqrt(Kf) ) * self.matrix.vm + math.sqrt(Kf) * self.fibre.vf12  
+		# self.v12 = (1 - math.sqrt(Kf) ) * self.matrix.vm + math.sqrt(Kf) * self.fibre.vf12  
+		self.v12 = self.fibre.vf12 * Kf + self.matrix.vm * Km
+		self.v21 = self.v12 * self.E2 / self.E1
+
+		self.Xt = Kf * self.fibre.Xt
+		self.Xc = Kf * self.fibre.Xc
+
+		self.Yt = (1 - (math.sqrt(Kf)-Kf)*(1-self.matrix.Em/self.fibre.Ef2))*self.matrix.Xt
+		self.Yc = (1 - (math.sqrt(Kf)-Kf)*(1-self.matrix.Em/self.fibre.Ef1))*self.matrix.Xc
+		self.S  = (1 - (math.sqrt(Kf)-Kf)*(1-self.matrix.Gm/self.fibre.Gf12))*self.matrix.S
+
 
 	def update_lamina_matrix(self):
 		# self.matrix_S = self.get_S()

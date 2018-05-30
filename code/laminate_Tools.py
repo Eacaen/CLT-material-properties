@@ -464,7 +464,7 @@ def laminate_step_failure(laminate , F = [10 ,0 ,0  ,0 ,0, 0] ,layer_num = 0 , \
 	LS = 1.01	 
 	
 	FF = []
-	plot_data = []
+	mean_strain = []
 	print("Failure analysis start running ------->>>")
 
 	while failed_count[2] < num:
@@ -474,37 +474,44 @@ def laminate_step_failure(laminate , F = [10 ,0 ,0  ,0 ,0, 0] ,layer_num = 0 , \
 
 		Criterion = Failure_Criterion()
 
-		Criterion.Tsai_Wu(Force)
-		# Criterion.Tsai_Hill(Force)
+		# Criterion.Tsai_Wu(Force)
+		Criterion.Tsai_Hill(Force)
 		
 		fail_list = Criterion.ret_list
 
-		FF.append(LF )
-		ss = Force.laminate_strains_xy[layer_num * 3 ]  [ply]
+		FF.append(LF)
+		ss = Force.laminate_strains_xy[layer_num * 3 ][ply]
 
-		plot_data.append(np.mean(ss))
+		mean_strain.append(np.mean(ss))
+
+		# if not True in fail_status["Failed?"]:
+		# 	Load_Factor.append(LF)
 
 		for i in range(num):
-			# sf = min(fail_list[i])
-			# con1 =  ( sf < 1 and not fail_status["Failed?"][i] ) 
 
+			# failure first time
 			sf = max(fail_list[i])
 			con1 =  ( sf > 1 and  fail_status["Failed?"][i] == False ) 
 
+			# failure not first time and the previous one is not fiber
 			con2_mode = (fail_status["Mode"][i] =="shear" or fail_status["Mode"][i] =="matrix")
 			con2 = ( sf > 1 and fail_status["Failed?"][i]== True and con2_mode )
 			
 			if con1 or con2:
+
+				if fail_status["Failed?"][i] == False:
+					laminate.lamina_list[i].fail_status["Failed"] = True
+
 				fail_status["Failed?"][i] = True
 
-				laminate.lamina_list[i].fail_status["Failed"] = True
-				 
 				fail_status["Mode"][i] = laminate.lamina_list[i].fail_status["Mode"]
 				fail_status["Load Factor"][i] = LF
 
-				Load_Factor.append(LF)
+				# Load_Factor.append(LF)
 				
 				if con1:
+
+					Load_Factor.append(LF)
 					failed_count[1] = failed_count[1] + 1
 
 					if  fail_status["Mode"][i] == "fiber":
@@ -514,11 +521,15 @@ def laminate_step_failure(laminate , F = [10 ,0 ,0  ,0 ,0, 0] ,layer_num = 0 , \
 					+ '  ----> At load ' + str ([int(load) for load in LF*F if load>0]))
 				
 
-				if con2  and (fail_status["Mode"][i] == "fiber" or fail_status["Mode"][i] == "shear"):
-					failed_count[1] = failed_count[1] + 1
+				# if con2  and (fail_status["Mode"][i] == "fiber" or fail_status["Mode"][i] == "shear"):
+				# if con2  and (fail_status["Mode"][i] != "matrix"):
+				if con2  and (fail_status["Mode"][i] == "fiber"):
+					Load_Factor.append(LF)
 
+					failed_count[1] = failed_count[1] + 1
 					failed_count[2] = failed_count[2] + 1
-					print(' ----------> enter fiber mode <----------')
+
+					print(' ----------> enter fiber/shear mode <----------')
 					print("Layer "+str(i)+" has failed. Mode: " + laminate.lamina_list[i].fail_status["Mode"]\
 					+ '  ----> At load ' + str ([int(load) for load in LF*F if load>0]))
 
@@ -546,17 +557,17 @@ def laminate_step_failure(laminate , F = [10 ,0 ,0  ,0 ,0, 0] ,layer_num = 0 , \
 	print("Last Ply Failure at Load: " + str(round(lpf) * F ))
 	print("last ply failure / first ply failure : " + str(round(lpf/fpf, 4)))
 
-	plt.annotate(r'$1_{st}F$', xy=(plot_data[FF.index(fpf)], fpf ), 
-                     xytext=(plot_data[FF.index(fpf)], fpf ),
+	plt.annotate('FPF', xy=(mean_strain[FF.index(fpf)], fpf ), 
+                     xytext=(mean_strain[FF.index(fpf)], fpf ),
                      arrowprops=dict(facecolor='blue'),
                     )
 
-	plt.annotate('LF', xy=(plot_data[FF.index(lpf)], lpf ) , 
-                     xytext=(plot_data[FF.index(lpf)], lpf ) ,
+	plt.annotate('LPF', xy=(mean_strain[FF.index(lpf)], lpf ) , 
+                     xytext=(mean_strain[FF.index(lpf)], lpf ) ,
                      arrowprops=dict(facecolor='red'),
                     )
 
-	plt.plot( plot_data[ 0 : FF.index(lpf) ] , FF[ 0 : FF.index(lpf) ] )
+	plt.plot( mean_strain[ 0 : FF.index(lpf) ] , FF[ 0 : FF.index(lpf) ] )
 
 	if ply == 0:
 		sig = r'$\varepsilon_1$'

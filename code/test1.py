@@ -18,7 +18,7 @@ if __name__ == "__main__":
 	LA.add_Lamina(b)
 	LA.add_Lamina(a)
 	LA.update()
-	Force = Loading(1,0,0)
+	Force = Loading([1,0,0])
 	Force.apple_to(LA)
 	
 	print( '\n\n',Force.laminate_stresses_12)
