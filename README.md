@@ -10,9 +10,16 @@ Introduction
 
 <img align="right"  width="400" height="300"  src="fig/Composite_3d.png" data-canonical-src="fig/Composite_3d.png" />
 
-#### Project code for Mechanics of Composite Structure IN NPU,PARTLY FINISH.
-#### ALL RIGHT RESERVED
 ********************************
+##### Project code for Mechanics of Composite Structure IN NPU,PARTLY FINISH.
+##### ALL RIGHT RESERVED
+
+********************************
+#### see the blade design used the composite materials
+[composite-blade-design](https://github.com/Eacaen/composite-blade-design)
+
+********************************
+
 ## Project goals:
 - Use the fibre and matrix or given data to define the composite lamina and then layup the laminate.
 - Use the *Classical Lamination Theory* to  calculate the stress&strain distribution in each layer.
@@ -29,6 +36,7 @@ Introduction
 - [x] Failure criteria [Tsai-Wu, Tsai-Hill, Hoffman, Max stress&strain ...]
 - [x] Display the figures and report accurate results
 - [x] Puck failure criteria
+- [x] Can choose failure criteria in step analysis by pass the name of the *failure criteria*
 - [ ] Thermal & moisture effects on CLT calculations
 - [ ] Database for Fibre and Matrix, laminate materials 
 - [ ] ...

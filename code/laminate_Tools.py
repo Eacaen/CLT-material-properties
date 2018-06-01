@@ -450,7 +450,8 @@ def Report_puck(Load,Laminate,layer_num = None ,save = ''):
 #
 ########################################################
 def laminate_step_failure(laminate , F = [10 ,0 ,0  ,0 ,0, 0] ,layer_num = 0 , \
-	Max_Load = 1e10 , ply = 0 , display = False  , show = True):
+	Max_Load = 1e10 , ply = 0 , display = False  , show = True ,\
+	 Fc = None ):
 	F =  np.array(F)
 	num = len( laminate.lamina_list )
 	
@@ -467,15 +468,26 @@ def laminate_step_failure(laminate , F = [10 ,0 ,0  ,0 ,0, 0] ,layer_num = 0 , \
 	mean_strain = []
 	print("Failure analysis start running ------->>>")
 
+	if Fc == None:
+		Criterion = Failure_Criterion()
+
+	elif Fc != None:
+		print('Failure_Criterion_choosen is ------->' + Fc )
+		Criterion = globals()['Failure_Criterion']()
+		
 	while failed_count[2] < num:
 		laminate.update()
 		Force = Loading( F * LF )
 		Force.apple_to(laminate)
 
-		Criterion = Failure_Criterion()
+		if Fc == None:
+			# Criterion.Tsai_Wu(Force)
+			Criterion.Tsai_Hill(Force)
 
-		# Criterion.Tsai_Wu(Force)
-		Criterion.Tsai_Hill(Force)
+		elif Fc != None:
+			# 
+			Failure_Criterion_choosen = getattr(Criterion, str(Fc))
+			Failure_Criterion_choosen(Force)
 		
 		fail_list = Criterion.ret_list
 
