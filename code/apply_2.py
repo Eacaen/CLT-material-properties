@@ -13,8 +13,8 @@ if __name__ == "__main__":
 
 	a = Lamina(fibre=f , angle = 0 ,thickness=1 )
 	print( a.matrix_Q)
-	b = Lamina(matrix=m, angle = 90,thickness=10.0)
-
+	b = Lamina(matrix=m, angle = 0,thickness=10.0)
+	print( b.matrix_Q)
 	
 	LA = Laminate()
 	LA.add_Lamina(a)
@@ -23,7 +23,7 @@ if __name__ == "__main__":
 	LA.update()
 
 	print(a.E1 , a.E2 , a.G12 ,a.v12 , a.v21 , a.angle , a.thickness)	
-	# print(b.E1 , b.E2 , b.angle , b.thickness)
+	print(b.E1 , b.E2 , b.angle , b.thickness)
 
 	# print(LA.Ex ,LA.Ey )
 	# Force = Loading(1,0,0)

@@ -105,8 +105,8 @@ class Failure_Criterion(object):
 					a = f11*sigma_1**2 + f22*sigma_2**2 + f66*tau_12**2 + 2*f12*sigma_1*sigma_2
 					b = f1*sigma_1 + f2*sigma_2
 
-					sf = (-b + (b**2 + 4*a)**(1.0/2)) / (2*a)
-					# sf = 1/(a+b)
+					# sf = (-b + (b**2 + 4*a)**(1.0/2)) / (2*a)
+					sf = 1/(a+b)
 
 					self.__ret_centroid = sf
 					temp_ret.append(self.__ret_centroid)

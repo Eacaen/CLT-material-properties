@@ -63,7 +63,7 @@ if __name__ == "__main__":
 	failed_count = [0, 0]
 	
 	# Load factor control
-	F = 10
+	F = 1000
 	LF = 0.20	   # Initial load factor
 	LS = 1.02	   # Load step multiplier
 	
@@ -93,13 +93,9 @@ if __name__ == "__main__":
 		# plot_data.append([LF , np.mean(Force.laminate_stresses_12)])
 
 		for i in range(num):
-			# print(fail_list[i])
-			# sf_inf = fail_list[i][0]
-			# sf_sup = fail_list[i][-1]
 
 			sf = min(fail_list[i])
-			# sf = min(sf_inf, sf_sup)
-			# print('sf------>  ',sf )
+
 
 			if sf < 1 and not fail_status["Failed?"][i]:
 				fail_status["Failed?"][i] = True
