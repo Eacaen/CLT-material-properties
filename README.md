@@ -16,7 +16,9 @@ Introduction
 
 ********************************
 #### see the blade design used the composite materials
-[composite-blade-design](https://github.com/Eacaen/composite-blade-design)
+__composite-blade-design__ 
+[Blog](https://eacaen.github.io/python/2017/10/17/composite-blade-design.html)
+[Github](https://github.com/Eacaen/composite-blade-design)
 
 ********************************
 
