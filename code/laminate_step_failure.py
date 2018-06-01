@@ -4,6 +4,8 @@ from Lamina import Lamina
 from Laminate import Laminate
 from Load import Loading
 from Failure_Criterion import Failure_Criterion , Puck_Crterion
+from laminate_Tools import *
+
 
 if __name__ == "__main__":
 	a = Lamina(69e9 ,6e9 , 3e9 ,v21 = 0.354 ,Xt = 47e6 ,Xc = 14e6,\
@@ -21,7 +23,7 @@ if __name__ == "__main__":
 				Yt = 24e6 ,Yc  = 18e6, S = 75e6,\
 				angle = 90,thickness=0.125e-3)
 
-	LA = Laminate()
+	LA = Laminate(degradation = 1e-9)
 	LA.add_Lamina(c)
 	LA.add_Lamina(a)
 	LA.add_Lamina(b)
@@ -36,13 +38,20 @@ if __name__ == "__main__":
 	LA.add_Lamina(a)
 	LA.add_Lamina(c)
 
-	LA.update()
+	# LA.update()
+	laminate_step_failure(LA ,layer_num = 0 , ply = 0 , display = 0)
+	# LA.update()
+	# # print(LA.AB	D)
+	# Force = Loading(10 ,0,0, 0 , 0, 0 )
+	# Force.apple_to(LA)
+	
+	# print( Report_strain(Force,mode = '12'))
 
+	# Criterion = Failure_Criterion()
 
-	print(a.E1)
-	print(b.E1)
-	a.E1 = 100000
-	print(a.E1)
-	print(b.E1)
+	# Criterion.Tsai_Wu(Force,layer_num = None)
+	# print( Criterion.ret_list)
+	# for lam in LA.lamina_list:
+	# 	print(lam.fail_status['Mode'])
+ 
 
-	print(1/2)

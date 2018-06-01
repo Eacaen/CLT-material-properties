@@ -10,7 +10,7 @@ class Laminate(object):
 	layer_counter = 0
 	layer_name_list = []
 
-	def __init__(self,lamina_num = 0,name = 'Layer_'):
+	def __init__(self,lamina_num = 0,name = 'Layer_' , degradation = 0.001):
 		super(Laminate, self).__init__()
 		self.lamina_list = []
 		self.lamina_num = len(self.lamina_list)
@@ -20,8 +20,11 @@ class Laminate(object):
 		self.T_Strain =[]
 		self.Zk = []
 		self.density = 0
-		# self.Zk.append(0.0)     #hidden huge bug !!! important !!! read the formula 
+		# self.Zk.append(0.0)   
+		#hidden huge bug !!! important !!! read the formula 
+		#add in update()
 		self.updated = 0
+		self.degradation = degradation
 
 		self.A = np.matrix([[0.0,0.0,0.0],[0.0,0.0,0.0],[0.0,0.0,0.0]])
 
@@ -64,7 +67,7 @@ class Laminate(object):
 
 		for lamina in self.lamina_list:
 
-			lamina.properities_degradation()
+			lamina.properities_degradation( self.degradation )
 			self.Qk.append(lamina.matrix_Q_bar)
 			self.T_Stress.append(lamina.matrix_Tstress)
 			self.T_Strain.append(lamina.matrix_Tstrain)

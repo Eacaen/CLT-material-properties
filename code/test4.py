@@ -40,7 +40,7 @@ if __name__ == "__main__":
 	LA.update()
 
 
-	Load = Loading(30 ,0,0, 0 , 0, 0 )
+	Load = Loading([30 ,0,0, 0 , 0, 0] )
 	Load.apple_to(LA)
 
 	print( Report_stress(Load,mode = '12'))
@@ -48,15 +48,18 @@ if __name__ == "__main__":
 	
 	Criterion = Failure_Criterion()
 
-	Criterion.Tsai_Wu(Load,layer_num = None)
+	Criterion.Tsai_Wu(Load)
 	print( Criterion.ret_list)
 	for lam in LA.lamina_list:
 		print(lam.fail_status['Mode'])
  
-	Load = Loading(37327 ,0,0, 0 , 0, 0 )
+	Load = Loading([0 ,0,0, 10 , 0, 0] )
 	Load.apple_to(LA)
 	
 	Criterion = Failure_Criterion()
 
-	Criterion.Tsai_Wu(Load,layer_num = None)
+	Criterion.Tsai_Wu(Load)
 	print( Criterion.ret_list)
+	# plot_stress(Load ,mode = '12',mode2 = '1')
+
+	plot_strain(Load,mode = 'xy',mode2 = 'x')

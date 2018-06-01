@@ -22,159 +22,145 @@ class Failure_Criterion(object):
 		self.ret_list = []
 		
 		self.__ret_centroid = 0
-		 
-#************************************************************************
-#    Failure_Criterion in the centroid layer
-#************************************************************************
 		stress_Criterion = loading.laminate_stresses_12
 
-		if layer_num != None:
-			stress_ply = stress_Criterion[layer_num*3+1]
+		a,b,c = np.shape(stress_Criterion)
+		for i in range(0 , int(a/3.0)):
+			temp_ret =[]
 
-			Xt = loading.laminate_loaded.lamina_list[layer_num].Xt
-			Xc = loading.laminate_loaded.lamina_list[layer_num].Xc
-			Yt = loading.laminate_loaded.lamina_list[layer_num].Yt
-			Yc = loading.laminate_loaded.lamina_list[layer_num].Yc
-			S  = loading.laminate_loaded.lamina_list[layer_num].S
+			Xt = loading.laminate_loaded.lamina_list[i].Xt
+			Xc = loading.laminate_loaded.lamina_list[i].Xc
+			Yt = loading.laminate_loaded.lamina_list[i].Yt
+			Yc = loading.laminate_loaded.lamina_list[i].Yc
+			S  = loading.laminate_loaded.lamina_list[i].S
 
-			sigma_1 = float(stress_ply[0])
-			sigma_2 = float(stress_ply[1])
-			tau_12_12  = float(stress_ply[2])
-			self.__ret_centroid = (sigma_1 / Xt) **2 - (sigma_1 * sigma_2) / (Xt**2) + \
-								(sigma_2 / Yt) **2 + (tau_12_12 / S) **2
-			self.ret_list.append(self.__ret_centroid)
-
-		if layer_num == None:
-			a,b,c = np.shape(stress_Criterion)
-			for i in range(1,a,3):
+			for n in [0,1 , 2]:
+				stress_ply = stress_Criterion[ i * 3 + n]
 				
-				layer_num = int((i-1)/3)
-
-				Xt = loading.laminate_loaded.lamina_list[layer_num].Xt
-				Xc = loading.laminate_loaded.lamina_list[layer_num].Xc
-				Yt = loading.laminate_loaded.lamina_list[layer_num].Yt
-				Yc = loading.laminate_loaded.lamina_list[layer_num].Yc
-				S  = loading.laminate_loaded.lamina_list[layer_num].S
-
-				stress_ply = stress_Criterion[i]
 				sigma_1 = float(stress_ply[0])
 				sigma_2 = float(stress_ply[1])
-				tau_12_12  = float(stress_ply[2])
-
-				self.__ret_centroid = (sigma_1 / Xt) **2 - (sigma_1 * sigma_2) / (Xt**2) + \
-									(sigma_2 / Yt) **2 + (tau_12_12 / S) **2
-				self.ret_list.append(self.__ret_centroid)
+				tau_12  =  float(stress_ply[2])
 
 
-	def Tsai_Wu(self,loading,layer_num = None ):
+				sf = (sigma_1 / Xt) **2 - (sigma_1 * sigma_2) / (Xt**2) + \
+								(sigma_2 / Yt) **2 + (tau_12 / S) **2
+				
+				self.__ret_centroid = sf
+				temp_ret.append(self.__ret_centroid)
+
+			    # Failure mode calculations  
+				H1 = abs( (sigma_1 / Xt) **2 )
+				H2 = abs( (sigma_2 / Yt) **2 )
+				H6 = abs((tau_12 / S) **2 )
+				 
+				if max(H1,H2,H6) == H1:
+					mode = "fiber"        # fiber failure
+				elif max(H1,H2,H6) == H2:
+					mode = "matrix"        # matrix failure
+				else:
+					mode = "shear"        # shear failure
+					
+				loading.laminate_loaded.lamina_list[i].fail_status['Mode'] = mode
+			
+			self.ret_list.append( temp_ret )
+
+	def Tsai_Wu(self,loading ):
 		self.ret_list = []
 		self.__ret_centroid = 0
-		
-#************************************************************************
-#    Failure_Criterion in the centroid layer
-#************************************************************************
 		stress_Criterion = loading.laminate_stresses_12
 
-		if layer_num == None:
-			a,b,c = np.shape(stress_Criterion)
+		a,b,c = np.shape(stress_Criterion)
 
-			for i in range(0 , int(a/3.0)):
-				temp_ret =[]
+		for i in range(0 , int(a/3.0)):
+			temp_ret =[]
 				 
-				Xt = loading.laminate_loaded.lamina_list[i].Xt
-				Xc = loading.laminate_loaded.lamina_list[i].Xc
-				Yt = loading.laminate_loaded.lamina_list[i].Yt
-				Yc = loading.laminate_loaded.lamina_list[i].Yc
-				S  = loading.laminate_loaded.lamina_list[i].S
+			Xt = loading.laminate_loaded.lamina_list[i].Xt
+			Xc = loading.laminate_loaded.lamina_list[i].Xc
+			Yt = loading.laminate_loaded.lamina_list[i].Yt
+			Yc = loading.laminate_loaded.lamina_list[i].Yc
+			S  = loading.laminate_loaded.lamina_list[i].S
 
-				f11 = 1/(Xt*Xc)
-				f22 = 1/(Yt*Yc)
-				f12 = -1/(2*(Xt*Xc*Yt*Yc)**(1/2))
-				f66 = 1/(S**2)
-				f1 = 1/Xt - 1/Xc
-				f2 = 1/Yt - 1/Yc
+			f11 = 1/(Xt*Xc)
+			f22 = 1/(Yt*Yc)
+			f12 = -1/(2*(Xt*Xc*Yt*Yc)**(1/2))
+			f66 = 1/(S**2)
+			f1 = 1/Xt - 1/Xc
+			f2 = 1/Yt - 1/Yc
 
 
-				for n in [0,1 , 2]:
-					stress_ply = stress_Criterion[ i * 3 + n]
+			for n in [0,1 , 2]:
+				stress_ply = stress_Criterion[ i * 3 + n]
 				
-					sigma_1 = float(stress_ply[0])
-					sigma_2 = float(stress_ply[1])
-					tau_12  =  float(stress_ply[2])
+				sigma_1 = np.array(stress_ply[0])[0][0]
+				sigma_2 = np.array(stress_ply[1])[0][0]
+				tau_12  =  np.array(stress_ply[2])[0][0]
 
-					a = f11*sigma_1**2 + f22*sigma_2**2 + f66*tau_12**2 + 2*f12*sigma_1*sigma_2
-					b = f1*sigma_1 + f2*sigma_2
+				a = f11*sigma_1**2 + f22*sigma_2**2 + f66*tau_12**2 + 2*f12*sigma_1*sigma_2
+				b = f1*sigma_1 + f2*sigma_2
 
-					# sf = (-b + (b**2 + 4*a)**(1.0/2)) / (2*a)
-					sf = 1/(a+b)
-
-					self.__ret_centroid = sf
-					temp_ret.append(self.__ret_centroid)
+				# sf = (-b + (b**2 + 4*a)**(1/2)) / (2*a)
+				# sf = 1.0/(a+b)
+				sf = (a+b)
+				self.__ret_centroid = sf
+				temp_ret.append(self.__ret_centroid)
 				
-				    # Failure mode calculations  
-					H1 = abs(f1*sigma_1 + f11*sigma_1**2)
-					H2 = abs(f2*sigma_2 + f22*sigma_2**2)
-					H6 = abs(f66*tau_12**2)
+			    # Failure mode calculations  
+				H1 = abs(f1*sigma_1 + f11*sigma_1**2)
+				H2 = abs(f2*sigma_2 + f22*sigma_2**2)
+				H6 = abs(f66*tau_12**2)
 				 
-					if max(H1,H2,H6) == H1:
-						mode = "fiber"        # fiber failure
-					elif max(H1,H2,H6) == H2:
-						mode = "matrix"        # matrix failure
-					else:
-						mode = "shear"        # shear failure
-					loading.laminate_loaded.lamina_list[i].fail_status['Mode'] = mode
-				self.ret_list.append( temp_ret )
+				if max(H1,H2,H6) == H1:
+					mode = "fiber"        # fiber failure
+				elif max(H1,H2,H6) == H2:
+					mode = "matrix"        # matrix failure
+				else:
+					mode = "shear"        # shear failure
+				loading.laminate_loaded.lamina_list[i].fail_status['Mode'] = mode
+			self.ret_list.append( temp_ret )
 
 
 	def Hoffman(self,loading,layer_num = None ):
 		self.ret_list = []
 		self.__ret_centroid = 0
-		 
-#************************************************************************
-#    Failure_Criterion in the centroid layer
-#************************************************************************
 		stress_Criterion = loading.laminate_stresses_12
 
-		if layer_num != None:
-			stress_ply = stress_Criterion[layer_num*3+1]
+		a,b,c = np.shape(stress_Criterion)
+		for i in range(0 , int(a/3.0)):
+			temp_ret =[]
 
-			Xt = loading.laminate_loaded.lamina_list[layer_num].Xt
-			Xc = loading.laminate_loaded.lamina_list[layer_num].Xc
-			Yt = loading.laminate_loaded.lamina_list[layer_num].Yt
-			Yc = loading.laminate_loaded.lamina_list[layer_num].Yc
-			S  = loading.laminate_loaded.lamina_list[layer_num].S
+			Xt = loading.laminate_loaded.lamina_list[i].Xt
+			Xc = loading.laminate_loaded.lamina_list[i].Xc
+			Yt = loading.laminate_loaded.lamina_list[i].Yt
+			Yc = loading.laminate_loaded.lamina_list[i].Yc
+			S  = loading.laminate_loaded.lamina_list[i].S
 
-			sigma_1 = float(stress_ply[0])
-			sigma_2 = float(stress_ply[1])
-			tau_12_12  = float(stress_ply[2])
-			self.__ret_centroid = (sigma_1 / Xt) **2 - (sigma_1 * sigma_2) / (Xt*Xc) + (sigma_2)**2/(Yt*Yc) +\
-								sigma_1 * (Xt - Xc) /(Xt - Xc) - sigma_2 * (Yt * Yc)/(Yt - Yc)+ \
-								 	(tau_12_12 / S) **2
-			self.ret_list.append(self.__ret_centroid)
-
-		if layer_num == None:
-			a,b,c = np.shape(stress_Criterion)
-			for i in range(1,a,3):
+			for n in [0,1 , 2]:
+				stress_ply = stress_Criterion[ i * 3 + n]
 				
-				layer_num = (i-1)/3.0
-
-				Xt = loading.laminate_loaded.lamina_list[layer_num].Xt
-				Xc = loading.laminate_loaded.lamina_list[layer_num].Xc
-				Yt = loading.laminate_loaded.lamina_list[layer_num].Yt
-				Yc = loading.laminate_loaded.lamina_list[layer_num].Yc
-				S  = loading.laminate_loaded.lamina_list[layer_num].S
-
-				stress_ply = stress_Criterion[i]
 				sigma_1 = float(stress_ply[0])
 				sigma_2 = float(stress_ply[1])
-				tau_12_12  = float(stress_ply[2])
+				tau_12  =  float(stress_ply[2])
 
-				self.__ret_centroid = (sigma_1 / Xt) **2 - (sigma_1 * sigma_2) / (Xt*Xc) + (sigma_2)**2/(Yt*Yc) +\
-								sigma_1 * (Xt - Xc) /(Xt - Xc) - sigma_2 * (Yt * Yc)/(Yt - Yc)+ \
-								 	(tau_12_12 / S) **2
-				self.ret_list.append(self.__ret_centroid)
+				H1 = (sigma_1**2 - sigma_1*sigma_2)/(Xt*Xc) + sigma_1*(Xt-Xc)/(Xt*Xc)
+				H2 = (sigma_2**2)/(Yt*Yc) + sigma_2*(Yt-Yc)/(Yt*Yc)
+				H6 = (tau_12 / S) **2
 
+				sf = H1+H2+H6
+				self.__ret_centroid = sf
 
+			    # Failure mode calculations  
+				 
+				if max(H1,H2,H6) == H1:
+					mode = "fiber"        # fiber failure
+				elif max(H1,H2,H6) == H2:
+					mode = "matrix"        # matrix failure
+				else:
+					mode = "shear"        # shear failure
+				loading.laminate_loaded.lamina_list[i].fail_status['Mode'] = mode
+
+				temp_ret.append(self.__ret_centroid)
+
+			self.ret_list.append( temp_ret )
 
 	def Puck(self,loading,layer_num = None ):
 		pass

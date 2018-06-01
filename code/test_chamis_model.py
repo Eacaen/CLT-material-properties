@@ -15,6 +15,8 @@ if __name__ == "__main__":
 	print( a.matrix_Q)
 	print( a.E2)
 	print( a.G12)
+	print( a.Xc)
+	
 	a.Chamis_Model(fibre_a = 0.2 , matrix_b = 0.5)
 	print( a.E2)
 	print( a.G12)
