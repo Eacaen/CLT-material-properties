@@ -41,6 +41,7 @@ __composite-blade-design__
 - [x] Display the figures and report accurate results
 - [x] Puck failure criteria
 - [x] Can choose failure criteria in step analysis by pass the name of the *failure criteria*
+- [x] Add progress bar in step analysis, more cleaner 
 - [ ] Thermal & moisture effects on CLT calculations
 - [ ] Database for Fibre and Matrix, laminate materials 
 - [ ] ...
