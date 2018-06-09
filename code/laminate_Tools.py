@@ -518,6 +518,8 @@ def laminate_step_failure(laminate , F = [10 ,0 ,0  ,0 ,0, 0] ,layer_num = 0 , \
 			if con1 or con2:
 
 				if fail_status["Failed?"][i] == False:
+					sleep(0.1)
+					pbar.update(1)
 					laminate.lamina_list[i].fail_status["Failed"] = True
 
 				fail_status["Failed?"][i] = True
@@ -534,8 +536,7 @@ def laminate_step_failure(laminate , F = [10 ,0 ,0  ,0 ,0, 0] ,layer_num = 0 , \
 
 					if  fail_status["Mode"][i] == "fiber":
 						failed_count[2] = failed_count[2] + 1
-						sleep(0.1)
-						pbar.update(1)
+						
 
 					tqdm.write("Layer "+str(i)+" has failed. Mode: " + laminate.lamina_list[i].fail_status["Mode"]\
 					+ '  ----> At load ' + str ([int(load) for load in LF*F if load>0]))
@@ -550,8 +551,6 @@ def laminate_step_failure(laminate , F = [10 ,0 ,0  ,0 ,0, 0] ,layer_num = 0 , \
 					tqdm.write("Layer "+str(i)+" has failed. Mode: " + laminate.lamina_list[i].fail_status["Mode"]\
 					+ '  ----> At load ' + str ([int(load) for load in LF*F if load>0]))
 
-					sleep(0.1)
-					pbar.update(1)
 
 		if failed_count[1] == failed_count[0]:	   
 			LF = LF*LS
