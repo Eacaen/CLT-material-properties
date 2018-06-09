@@ -31,6 +31,8 @@ from collections import OrderedDict
 import numpy as np
 import scipy as sp
 import math
+from tqdm import trange, tqdm
+from time import sleep
 def where_dot(ddoo):
 	i = 0
 	if isinstance(ddoo,int):
@@ -452,9 +454,13 @@ def Report_puck(Load,Laminate,layer_num = None ,save = ''):
 def laminate_step_failure(laminate , F = [10 ,0 ,0  ,0 ,0, 0] ,layer_num = 0 , \
 	Max_Load = 1e10 , ply = 0 , display = False  , show = True ,\
 	 Fc = None ):
+	
+
 	F =  np.array(F)
 	num = len( laminate.lamina_list )
 	
+	pbar = tqdm(total=num)
+
 	fail_status =  {"Failed?" : [False] * num, 
 			"Mode" : [""] * num,
 			"Load Factor" : [0] * num}
@@ -466,13 +472,13 @@ def laminate_step_failure(laminate , F = [10 ,0 ,0  ,0 ,0, 0] ,layer_num = 0 , \
 	
 	FF = []
 	mean_strain = []
-	print("Failure analysis start running ------->>>")
+	tqdm.write("Failure analysis start running ------->>>")
 
 	if Fc == None:
 		Criterion = Failure_Criterion()
 
 	elif Fc != None:
-		print('Failure_Criterion_choosen is ------->' + Fc )
+		tqdm.write('Failure_Criterion_choosen is ------->' + Fc )
 		Criterion = globals()['Failure_Criterion']()
 		
 	while failed_count[2] < num:
@@ -528,22 +534,24 @@ def laminate_step_failure(laminate , F = [10 ,0 ,0  ,0 ,0, 0] ,layer_num = 0 , \
 
 					if  fail_status["Mode"][i] == "fiber":
 						failed_count[2] = failed_count[2] + 1
+						sleep(0.1)
+						pbar.update(1)
 
-					print("Layer "+str(i)+" has failed. Mode: " + laminate.lamina_list[i].fail_status["Mode"]\
+					tqdm.write("Layer "+str(i)+" has failed. Mode: " + laminate.lamina_list[i].fail_status["Mode"]\
 					+ '  ----> At load ' + str ([int(load) for load in LF*F if load>0]))
-				
-
-				# if con2  and (fail_status["Mode"][i] == "fiber" or fail_status["Mode"][i] == "shear"):
-				# if con2  and (fail_status["Mode"][i] != "matrix"):
+		
 				if con2  and (fail_status["Mode"][i] == "fiber"):
 					Load_Factor.append(LF)
 
 					failed_count[1] = failed_count[1] + 1
 					failed_count[2] = failed_count[2] + 1
 
-					print(' ----------> enter fiber/shear mode <----------')
-					print("Layer "+str(i)+" has failed. Mode: " + laminate.lamina_list[i].fail_status["Mode"]\
+					tqdm.write(' ----------> enter fiber/shear mode <----------')
+					tqdm.write("Layer "+str(i)+" has failed. Mode: " + laminate.lamina_list[i].fail_status["Mode"]\
 					+ '  ----> At load ' + str ([int(load) for load in LF*F if load>0]))
+
+					sleep(0.1)
+					pbar.update(1)
 
 		if failed_count[1] == failed_count[0]:	   
 			LF = LF*LS
@@ -557,7 +565,7 @@ def laminate_step_failure(laminate , F = [10 ,0 ,0  ,0 ,0, 0] ,layer_num = 0 , \
 
 		if failed_count[2] > num or failed_count[2] == num:
 			break
-
+	
 	# fpf = min(fail_status["Load Factor"])
 	# lpf = max(fail_status["Load Factor"])
 
@@ -565,9 +573,9 @@ def laminate_step_failure(laminate , F = [10 ,0 ,0  ,0 ,0, 0] ,layer_num = 0 , \
 	lpf = max(Load_Factor)
 
     # Prints results
-	print("First Ply Failure at Load: " + str(round(fpf) * F ))
-	print("Last Ply Failure at Load: " + str(round(lpf) * F ))
-	print("last ply failure / first ply failure : " + str(round(lpf/fpf, 4)))
+	tqdm.write("First Ply Failure at Load: " + str(round(fpf) * F ))
+	tqdm.write("Last Ply Failure at Load: " + str(round(lpf) * F ))
+	tqdm.write("last ply failure / first ply failure : " + str(round(lpf/fpf, 4)))
 
 	plt.annotate('FPF', xy=(mean_strain[FF.index(fpf)], fpf ), 
                      xytext=(mean_strain[FF.index(fpf)], fpf ),
@@ -593,10 +601,13 @@ def laminate_step_failure(laminate , F = [10 ,0 ,0  ,0 ,0, 0] ,layer_num = 0 , \
 	plt.title(str(layer_num) + r'$_{st}$ ' + 'Strain  '+ sig + '  vs Load Factor')
 	plt.grid(True)
 
+	pbar.close()
 	print(fail_status["Mode"])
 
 	if show:
 		plt.show()
+
+	
 
 if __name__ == "__main__":
 	# a = Lamina(5.4e4,1.8e4,8.8e3,v21 = 0.25,Xt = 1.05e3,Xc = 1.04e3,\
