@@ -6,11 +6,11 @@ from laminate_Tools import *
 
 if __name__ == "__main__":
 	thick = 0.225e-3
-	fv = 0.6
+	fv = 0.4705
 	f = Fibre(23e10 ,15e9 , 24e9 ,vf12 = 0.279 ,density = 0 , Xt = 49e8 ,Xc = 441e7 ,\
 				Yt = 0  ,Yc = 0 , S = 49e8 )
 	
-	m = Matrix(Em = 27e8 , Gm= 1.15e9 , vm = 0.3  ,density = 0  ,Xt = 61e6,Xc = 92e6 ,\
+	m = Matrix(Em = 3e9 , Gm= 1.15e9 , vm = 0.3  ,density = 0  ,Xt = 70e6,Xc = 85e6 ,\
 				Yt = 0 ,Yc = 0 , S = 45e6 )
 
 	a0 = Lamina(angle = 0 ,thickness= thick )
@@ -40,7 +40,7 @@ if __name__ == "__main__":
 	print(LA.Ex ,LA.Ey )
 
 	laminate_step_failure(LA ,  F = [0 ,1 ,0  ,0 ,0, 0] ,layer_num = 5, ply = 1 ,\
-		Max_Load = 1e10  , display = 0)
+		Max_Load = 1e10  , display = 0,Fc = "Hoffman")
 
 	LA.update()
 	print(LA.Ex ,LA.Ey )

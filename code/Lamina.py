@@ -217,7 +217,7 @@ class Lamina(object):
 		self.Xc = Kf * self.fibre.Xc
 
 		self.Yt = (1 - (math.sqrt(Kf)-Kf)*(1-self.matrix.Em/self.fibre.Ef2))*self.matrix.Xt
-		self.Yc = (1 - (math.sqrt(Kf)-Kf)*(1-self.matrix.Em/self.fibre.Ef1))*self.matrix.Xc
+		self.Yc = (1 - (math.sqrt(Kf)-Kf)*(1-self.matrix.Em/self.fibre.Ef2))*self.matrix.Xc
 		self.S  = (1 - (math.sqrt(Kf)-Kf)*(1-self.matrix.Gm/self.fibre.Gf12))*self.matrix.S
 
 
