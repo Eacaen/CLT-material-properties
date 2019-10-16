@@ -60,7 +60,7 @@ if __name__ == "__main__":
 	print( a45.Xt , a45.Xc , a45.Yt , a45.Yc , a45.S )
 	print( a0.Xt , a0.Xc , a0.Yt , a0.Yc , a0.S )
 
-	Force = Loading(F = [2080000 ,0 ,0  ,0 ,0, 0])
+	Force = Loading(F = [0 ,0 ,0  ,2080000 ,0, 0])
 	Force.apple_to(LA)
 		
 	print( '\n\n',Force.laminate_stresses_xy)
@@ -69,5 +69,5 @@ if __name__ == "__main__":
 	Criterion.Tsai_Hill(Force,layer_num = None)
 	print( Criterion.ret_list)
 
-	# plot_stress(Force,max_ten = 0,mode = 'xy',mode2 = 'x')
-	# plot_strain(Force,mode = 'xy',max_ten = None,mode2 = 'x')
+	plot_stress(Force,max_ten = 0,mode = 'xy',mode2 = 'x')
+	plot_strain(Force,mode = 'xy',max_ten = None,mode2 = 'x')
