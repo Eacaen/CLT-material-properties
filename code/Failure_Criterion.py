@@ -28,11 +28,11 @@ class Failure_Criterion(object):
 		for i in range(0 , int(a/3.0)):
 			temp_ret =[]
 
-			Xt = loading.laminate_loaded.lamina_list[i].Xt
-			Xc = loading.laminate_loaded.lamina_list[i].Xc
-			Yt = loading.laminate_loaded.lamina_list[i].Yt
-			Yc = loading.laminate_loaded.lamina_list[i].Yc
-			S  = loading.laminate_loaded.lamina_list[i].S
+			# Xt = loading.laminate_loaded.lamina_list[i].Xt
+			# Xc = loading.laminate_loaded.lamina_list[i].Xc
+			# Yt = loading.laminate_loaded.lamina_list[i].Yt
+			# Yc = loading.laminate_loaded.lamina_list[i].Yc
+			# S  = loading.laminate_loaded.lamina_list[i].S
 
 			for n in [0,1 , 2]:
 				stress_ply = stress_Criterion[ i * 3 + n]
@@ -42,9 +42,31 @@ class Failure_Criterion(object):
 				tau_12  =  float(stress_ply[2])
 
 
-				sf = (sigma_1 / Xt) **2 - (sigma_1 * sigma_2) / (Xt**2) + \
-								(sigma_2 / Yt) **2 + (tau_12 / S) **2
-				
+				# sf = (sigma_1 / Xt) **2 - (sigma_1 * sigma_2) / (Xt**2) + \
+				# 				(sigma_2 / Yt) **2 + (tau_12 / S) **2
+
+				if sigma_1 > 0:
+				    Xt = loading.laminate_loaded.lamina_list[i].Xt
+				else:
+				    Xt = loading.laminate_loaded.lamina_list[i].Xc
+				    
+				if sigma_2 > 0:
+				    Yt = loading.laminate_loaded.lamina_list[i].Yt
+				else:
+				    Yt = loading.laminate_loaded.lamina_list[i].Yc
+				    
+				if (sigma_1 * sigma_2) > 0:
+				    Xt2 = loading.laminate_loaded.lamina_list[i].Xt
+				else:
+				    Xt2 = loading.laminate_loaded.lamina_list[i].Xc
+
+				S  = loading.laminate_loaded.lamina_list[i].S
+
+				sf = (sigma_1 / Xt) **2 - (sigma_1 * sigma_2) / (Xt2**2) + \
+				                                    (sigma_2 / Yt) **2 + (tau_12 / S) **2
+
+
+
 				self.__ret_centroid = sf
 				temp_ret.append(self.__ret_centroid)
 
